@@ -1,14 +1,17 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { MetaMaskProvider } from "metamask-react";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  <MetaMaskProvider>
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  </MetaMaskProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function
