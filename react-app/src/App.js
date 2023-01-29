@@ -3,7 +3,7 @@ import ConnectWalletButton from "./components/ConnectWalletButton";
 
 function App() {
   return (
-    <div className="App">
+    <div className="text-center">
       <ConnectWalletButton />
     </div>
   );
