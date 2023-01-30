@@ -2,6 +2,7 @@ import "./App.css";
 import ConnectWalletButton from "./components/ConnectWalletButton";
 import TokenSelectDropDown from "./components/TokenSelectDropDown";
 import fileCoinLogo from "./assets/filcoin_logo.svg";
+import TokenQuantityInput from "./components/TokenQuantityInput";
 
 function App() {
   return (
@@ -9,16 +10,19 @@ function App() {
       <div className="flex justify-end mr-4 mt-4">
         <ConnectWalletButton />
       </div>
-      <div className="flex justify-start flex-col m-8 bg-slight-black text-grey-font rounded p-4">
-        <div>You send</div>
+      <div className="flex justify-start flex-col m-8 bg-slight-black text-grey-font rounded-lg p-4">
+        <div className="text-sm mb-6">You send</div>
         <div className="flex justify-start">
           <TokenSelectDropDown
             tokenName="FIL"
             tokenBalance="11112.23"
             tokenLogo={fileCoinLogo}
           />
-          <input type="number" name="" id="" />
+          <div className="ml-2" />
+          <TokenQuantityInput />
         </div>
+        <div className="mb-8" />
+        <hr className="border-divider-dark border" />
       </div>
     </div>
   );
