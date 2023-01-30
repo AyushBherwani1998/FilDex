@@ -8,7 +8,7 @@ import { MetaMaskProvider } from "metamask-react";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <MetaMaskProvider>
-    <React.StrictMode>
+    <React.StrictMode className="bg-black">
       <App />
     </React.StrictMode>
   </MetaMaskProvider>
