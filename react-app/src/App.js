@@ -1,4 +1,3 @@
-import "./App.css";
 import ConnectWalletButton from "./components/ConnectWalletButton";
 import TokenSelectDropDown from "./components/TokenSelectDropDown";
 import fileCoinLogo from "./assets/filcoin_logo.svg";
