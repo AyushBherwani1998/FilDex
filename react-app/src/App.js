@@ -4,8 +4,11 @@ import TokenSelectDropDown from "./components/TokenSelectDropDown";
 import fileCoinLogo from "./assets/filcoin_logo.svg";
 import TokenQuantityInput from "./components/TokenQuantityInput";
 import TokenQtyValueView from "./components/TokenQtyValueView";
+import { useState } from "react";
 
 function App() {
+  const [qty, setQty] = useState("");
+
   return (
     <div>
       <div className="flex justify-end mr-4 mt-4">
@@ -21,7 +24,7 @@ function App() {
               tokenLogo={fileCoinLogo}
             />
             <div className="ml-2" />
-            <TokenQuantityInput />
+            <TokenQuantityInput onInput={setQty} />
           </div>
           <div className="mb-8" />
           <hr className="border-divider-dark border" />
@@ -37,6 +40,7 @@ function App() {
       </div>
       <div className="flex justify-center">
         <button class="rounded-full bg-white px-20 py-3 text-xl">Swap</button>
+        <div className="text-white">{qty}</div>
       </div>
     </div>
   );
