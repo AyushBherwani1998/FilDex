@@ -34,17 +34,20 @@ contract FilDexSwap {
         tokenOutAmount = amount[1];
     }
 
+    function provideTokenAllowance(address sender, address tokenAddress, uint amount) private {
+        IERC20 token = IERC20(tokenAddress);
+        token.transferFrom(sender, address(this), amount);
+        uint allowance = token.allowance(address(this), address(router));
+        if (allowance <= 0) {
+            token.approve(address(router), amount);
+        }
+    }   
+
     function swapNonNativeToken(address tokenInAddress, address tokenOutAddress, uint tokenInAmount) external returns(uint swapAmount) {
         uint contractAllowance = getAllowance(tokenInAddress);
         require(contractAllowance > 0, "Allowance error");
 
-        IERC20 tokenIn = IERC20(tokenInAddress);
-
-        tokenIn.transferFrom(msg.sender, address(this), tokenInAmount);
-        uint allowanceAmount = tokenIn.allowance(address(this), address(router));
-        if(allowanceAmount <= 0) {
-            tokenIn.approve(address(router), tokenInAmount);
-        }
+        provideTokenAllowance(msg.sender, tokenInAddress, tokenInAmount);
         
         address[] memory path;
         path = new address[](2);
@@ -65,13 +68,13 @@ contract FilDexSwap {
         swapAmount = amounts[1]; 
     }
 
-    function swapNativeToken(address tokenOutAddress, uint tokenInAmount) external payable returns(uint swapAmount) {
+    function swapNativeToken(address tokenOutAddress) external payable returns(uint swapAmount) {
         address[] memory path;
         path = new address[](2);
         path[0] = WETH;
         path[1] = tokenOutAddress;
 
-        uint tokenOutAmount = router.getAmountsOut(tokenInAmount, path)[1];
+        uint tokenOutAmount = router.getAmountsOut(msg.value, path)[1];
         uint deadline = block.timestamp + 5 minutes;
 
         uint[] memory amounts = router.swapExactETHForTokens{value: msg.value}(
@@ -90,47 +93,28 @@ contract FilDexSwap {
         uint contractToken1Allowance = getAllowance(token1Address);
         require(contractToken1Allowance > 0, "Allowance error");
 
-        IERC20 token0 = IERC20(token0Address);
-        IERC20 token1 = IERC20(token1Address);
+        provideTokenAllowance(msg.sender, token0Address, token0Amount);
+        provideTokenAllowance(msg.sender, token1Address, token1Amount);
 
-        token0.transferFrom(msg.sender, address(this), token0Amount);
-        token1.transferFrom(msg.sender, address(this), token1Amount);
-        uint token0Allowance = token0.allowance(address(this), address(router));
-        if (token0Allowance <= 0) {
-            token0.approve(address(router), token0Amount);
-        }
-        uint token1Allowance = token1.allowance(address(this), address(router));
-        if (token1Allowance <= 0) {
-            token1.approve(address(router), token1Amount);
-        }
-
-        //uint deadline = block.timestamp + 5 minutes;
+        uint deadline = block.timestamp + 5 minutes;
     
-        // (token0AmountAdded, token1AmountAdded, liquidity) = router.addLiquidity(
-        //     token1Address, 
-        //     token1Address, 
-        //     token0Amount, 
-        //     token1Amount,
-        //     token0Amount, 
-        //     token1Amount, 
-        //     msg.sender, 
-        //     deadline
-        // );
-
-        return (0, 0, 0);
+        (token0AmountAdded, token1AmountAdded, liquidity) = router.addLiquidity(
+            token0Address, 
+            token1Address, 
+            token0Amount, 
+            token1Amount,
+            token0Amount, 
+            token1Amount, 
+            msg.sender, 
+            deadline
+        );
     }
 
     function addNativeTokenLiquidity(address token1Address, uint token1Amount) external payable returns(uint nativeTokenAmountAdded, uint token1AmountAdded, uint liquidity) {
         uint contractAllowance = getAllowance(token1Address);
         require(contractAllowance > 0, "Allowance error");
 
-        IERC20 token1 = IERC20(token1Address);
-
-        token1.transferFrom(msg.sender, address(this), token1Amount);
-        uint token1Allowance = token1.allowance(address(this), address(router));
-        if (token1Allowance <= 0) {
-            token1.approve(address(router), token1Amount);
-        }
+        provideTokenAllowance(msg.sender, token1Address, token1Amount);
 
         uint deadline = block.timestamp + 5 minutes;
 
