@@ -1,7 +1,7 @@
 import { useMetaMask } from "metamask-react";
 
-export default function ConnectWalletButton() {
-  const { status, connect, account, chainId } = useMetaMask();
+export default function ConnectWalletButton({ onProvider }) {
+  const { status, connect, account, chainId, ethereum } = useMetaMask();
 
   if (status === "initializing")
     return <div>Synchronisation with MetaMask ongoing...</div>;
@@ -20,12 +20,14 @@ export default function ConnectWalletButton() {
 
   if (status === "connecting") return <div>Connecting...</div>;
 
-  if (status === "connected")
+  if (status === "connected") {
+    onProvider(ethereum);
     return (
       <div className="text-white">
         Connected account {account} on chain ID {chainId}
       </div>
     );
+  }
 
   return null;
 }

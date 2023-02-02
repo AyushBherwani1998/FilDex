@@ -4,14 +4,21 @@ import fileCoinLogo from "./assets/filcoin_logo.svg";
 import TokenQuantityInput from "./components/TokenQuantityInput";
 import TokenQtyValueView from "./components/TokenQtyValueView";
 import { useState } from "react";
+import OptinBanner from "./components/push/NotificationOptinBanner";
 
 function App() {
   const [qty, setQty] = useState("");
-
+  var swapContract;
   return (
     <div>
       <div className="flex justify-end mr-4 mt-4">
-        <ConnectWalletButton />
+        <ConnectWalletButton
+          onProvider={async (provider) => {
+            swapContract = makeSwapContract(provider);
+            const data = await swapContract.methods.checkAllowance().call();
+            console.log(data);
+          }}
+        />
       </div>
       <div className="flex flex-row justify-center">
         <div className="flex justify-start flex-col m-8 bg-slight-black text-grey-font rounded-lg p-4">
@@ -38,7 +45,9 @@ function App() {
         </div>
       </div>
       <div className="flex justify-center">
-        <button class="rounded-full bg-white px-20 py-3 text-xl">Swap</button>
+        <button className="rounded-full bg-white px-20 py-3 text-xl">
+          Swap
+        </button>
         <div className="text-white">{qty}</div>
       </div>
     </div>
