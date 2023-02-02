@@ -34,7 +34,6 @@ contract FilDexSwap {
         tokenOutAmount = amount[1];
     }
 
-    //verified
     function swapNonNativeToken(address tokenInAddress, address tokenOutAddress, uint tokenInAmount) external returns(uint swapAmount) {
         uint contractAllowance = getAllowance(tokenInAddress);
         require(contractAllowance > 0, "Allowance error");
@@ -66,7 +65,6 @@ contract FilDexSwap {
         swapAmount = amounts[1]; 
     }
 
-
     function swapNativeToken(address tokenOutAddress, uint tokenInAmount) external payable returns(uint swapAmount) {
         address[] memory path;
         path = new address[](2);
@@ -76,7 +74,7 @@ contract FilDexSwap {
         uint tokenOutAmount = router.getAmountsOut(tokenInAmount, path)[1];
         uint deadline = block.timestamp + 5 minutes;
 
-        uint[] memory amounts = router.swapExactETHForTokens(
+        uint[] memory amounts = router.swapExactETHForTokens{value: msg.value}(
             tokenOutAmount, 
             path, 
             msg.sender, 
@@ -86,7 +84,6 @@ contract FilDexSwap {
         swapAmount = amounts[1]; 
     }
 
-    //verified
     function addNonNativeTokenLiquidity(address token0Address, address token1Address, uint token0Amount, uint token1Amount) external returns(uint token0AmountAdded, uint token1AmountAdded, uint liquidity) {
         uint contractToken0Allowance = getAllowance(token0Address);
         require(contractToken0Allowance > 0, "Allowance error");
