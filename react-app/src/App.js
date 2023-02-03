@@ -15,7 +15,9 @@ function App() {
         <ConnectWalletButton
           onProvider={async (provider) => {
             swapContract = makeSwapContract(provider);
-            const data = await swapContract.methods.checkAllowance().call();
+            const data = await swapContract.methods
+              .getAllowance("0xdc31ee1784292379fbb2964b3b9c4124d8f89c60")
+              .call();
             console.log(data);
           }}
         />
