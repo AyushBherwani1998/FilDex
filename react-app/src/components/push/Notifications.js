@@ -11,7 +11,7 @@ function Notifications() {
         const loadNotifications = async () => {
             try {
                 setLoading(true);
-                const feeds = await getUserNotifications('0x4b08B1ece8faC899bA6243FBb0DA09B7dE63dA06');
+                const feeds = await getUserNotifications('0x458B534Bb7857F5b9A761D71ffA40f41B6c6D51b');
                 console.log('notifications: ', feeds);
                 setNotifications(feeds);
             } catch (e) {
