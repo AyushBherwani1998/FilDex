@@ -1,14 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol";
+
 contract FilDexSwap {
     using SafeMath  for uint;
-    address private constant FILDEXSWAP_ROUTER =
-        0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
+    
+    IFilDexSwapRouter private router;  
+    address private wrappedToken; 
 
-    address private constant WETH = 0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6;
-
-    IFilDexSwapRouter private router = IFilDexSwapRouter(FILDEXSWAP_ROUTER);    
+    constructor(address _router, address _wrappedToken) {
+        router = IFilDexSwapRouter(_router);
+        wrappedToken = _wrappedToken;
+    }  
 
     function getAllowance(address tokenAddress) public view returns(uint allowance) {
         IERC20 token = IERC20(tokenAddress);
@@ -28,7 +33,7 @@ contract FilDexSwap {
     function getNativeQuote(address tokenOutAddress, uint tokenInAmount) external view returns(uint tokenOutAmount) {
         address[] memory path;
         path = new address[](2);
-        path[0] = WETH;
+        path[0] = wrappedToken;
         path[1] = tokenOutAddress;
 
         uint[] memory amount = router.getAmountsOut(tokenInAmount, path);
@@ -69,7 +74,7 @@ contract FilDexSwap {
     function swapNativeToken(address tokenOutAddress) external payable returns(uint swapAmount) {
         address[] memory path;
         path = new address[](2);
-        path[0] = WETH;
+        path[0] = wrappedToken;
         path[1] = tokenOutAddress;
 
         uint tokenOutAmount = router.getAmountsOut(msg.value, path)[1];
@@ -94,8 +99,8 @@ contract FilDexSwap {
         provideTokenAllowance(msg.sender, token0Address, token0Amount);
         provideTokenAllowance(msg.sender, token1Address, token1Amount);
 
-        uint token0Slippage = token0Amount.mul(slippage)/100; 
-        uint token1Slippage = token1Amount.mul(slippage)/100; 
+        uint token0Slippage = token0Amount.mul(slippage).div(100); 
+        uint token1Slippage = token1Amount.mul(slippage).div(100); 
         uint token0AmountMin = token0Amount.sub(token0Slippage);
         uint token1AmountMin = token1Amount.sub(token1Slippage);
 
@@ -121,8 +126,8 @@ contract FilDexSwap {
 
         uint nativeTokenAmount = msg.value; 
 
-        uint nativeTokenSlippage = nativeTokenAmount.mul(slippage)/100; 
-        uint token1Slippage = token1Amount.mul(slippage)/100; 
+        uint nativeTokenSlippage = nativeTokenAmount.mul(slippage).div(100); 
+        uint token1Slippage = token1Amount.mul(slippage).div(100); 
 
         uint nativeTokenMin = nativeTokenAmount.sub(nativeTokenSlippage);
         uint token1AmountMin = token1Amount.sub(token1Slippage);
@@ -179,32 +184,4 @@ interface IFilDexSwapRouter {
         address to,
         uint deadline
     ) external payable returns (uint amountToken, uint amountETH, uint liquidity);
-}
-
-interface IERC20 {
-    function allowance(address owner, address spender) external view returns (uint);
-
-    function approve(address spender, uint amount) external returns (bool);
-
-    function transferFrom(
-        address sender,
-        address recipient,
-        uint amount
-    ) external returns (bool);
-}
-
-// a library for performing overflow-safe math, courtesy of DappHub (https://github.com/dapphub/ds-math)
-
-library SafeMath {
-    function add(uint x, uint y) internal pure returns (uint z) {
-        require((z = x + y) >= x, 'ds-math-add-overflow');
-    }
-
-    function sub(uint x, uint y) internal pure returns (uint z) {
-        require((z = x - y) <= x, 'ds-math-sub-underflow');
-    }
-
-    function mul(uint x, uint y) internal pure returns (uint z) {
-        require(y == 0 || (z = x * y) / y == x, 'ds-math-mul-overflow');
-    }
 }
