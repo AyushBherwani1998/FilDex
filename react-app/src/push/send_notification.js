@@ -7,7 +7,7 @@ const Pkey = `0x${PK}`;
 const signer = new ethers.Wallet(Pkey);
 const channelAddress = "0x458B534Bb7857F5b9A761D71ffA40f41B6c6D51b";
 
-async function sendNotification(title: string, body: string, recipient: string) {
+async function sendNotification(title, body, recipient, cta = '') {
     try {
         const apiResponse = await PushAPI.payloads.sendNotification({
             signer,
@@ -21,7 +21,7 @@ async function sendNotification(title: string, body: string, recipient: string) 
                 title: title,
                 body: body,
                 img: '',
-                cta: '',
+                cta: cta,
             },
             recipients: `eip155:5:${recipient}`,
             channel: `eip155:5:${channelAddress}`,
