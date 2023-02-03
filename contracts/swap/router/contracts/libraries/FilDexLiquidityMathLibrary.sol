@@ -6,11 +6,11 @@ import '@uniswap/lib/contracts/libraries/Babylonian.sol';
 import '@uniswap/lib/contracts/libraries/FullMath.sol';
 
 import './SafeMath.sol';
-import './UniswapV2Library.sol';
+import './FilDexLibrary.sol';
 
 // library containing some math for dealing with the liquidity shares of a pair, e.g. computing their exact value
 // in terms of the underlying tokens
-library UniswapV2LiquidityMathLibrary {
+library FilDexLiquidityMathLibrary {
     using SafeMath for uint256;
 
     // computes the direction and magnitude of the profit-maximizing trade
