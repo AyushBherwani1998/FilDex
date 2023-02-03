@@ -2,6 +2,7 @@
 pragma solidity ^0.8.17;
 
 contract FilDexSwap {
+    using SafeMath  for uint;
     address private constant FILDEXSWAP_ROUTER =
         0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
 
@@ -14,7 +15,7 @@ contract FilDexSwap {
         allowance = token.allowance(msg.sender, address(this));
     }
 
-    function getQuote(address tokenInAddress, address tokenOutAddress, uint tokenInAmount) external view returns(uint tokenOutAmount) {
+    function getQuote(address tokenInAddress, address tokenOutAddress, uint tokenInAmount) public view returns(uint tokenOutAmount) {
         address[] memory path;
         path = new address[](2);
         path[0] = tokenInAddress;
@@ -37,10 +38,7 @@ contract FilDexSwap {
     function provideTokenAllowance(address sender, address tokenAddress, uint amount) private {
         IERC20 token = IERC20(tokenAddress);
         token.transferFrom(sender, address(this), amount);
-        uint allowance = token.allowance(address(this), address(router));
-        if (allowance <= 0) {
-            token.approve(address(router), amount);
-        }
+        token.approve(address(router), amount);
     }   
 
     function swapNonNativeToken(address tokenInAddress, address tokenOutAddress, uint tokenInAmount) external returns(uint swapAmount) {
@@ -87,7 +85,7 @@ contract FilDexSwap {
         swapAmount = amounts[1]; 
     }
 
-    function addNonNativeTokenLiquidity(address token0Address, address token1Address, uint token0Amount, uint token1Amount) external returns(uint token0AmountAdded, uint token1AmountAdded, uint liquidity) {
+    function addNonNativeTokenLiquidity(address token0Address, address token1Address, uint token0Amount, uint token1Amount, uint slippage) external returns(uint token0AmountAdded, uint token1AmountAdded, uint liquidity) {
         uint contractToken0Allowance = getAllowance(token0Address);
         require(contractToken0Allowance > 0, "Allowance error");
         uint contractToken1Allowance = getAllowance(token1Address);
@@ -96,6 +94,11 @@ contract FilDexSwap {
         provideTokenAllowance(msg.sender, token0Address, token0Amount);
         provideTokenAllowance(msg.sender, token1Address, token1Amount);
 
+        uint token0Slippage = token0Amount.mul(slippage)/100; 
+        uint token1Slippage = token1Amount.mul(slippage)/100; 
+        uint token0AmountMin = token0Amount.sub(token0Slippage);
+        uint token1AmountMin = token1Amount.sub(token1Slippage);
+
         uint deadline = block.timestamp + 5 minutes;
     
         (token0AmountAdded, token1AmountAdded, liquidity) = router.addLiquidity(
@@ -103,30 +106,41 @@ contract FilDexSwap {
             token1Address, 
             token0Amount, 
             token1Amount,
-            token0Amount, 
-            token1Amount, 
+            token0AmountMin, 
+            token1AmountMin, 
             msg.sender, 
             deadline
         );
     }
 
-    function addNativeTokenLiquidity(address token1Address, uint token1Amount) external payable returns(uint nativeTokenAmountAdded, uint token1AmountAdded, uint liquidity) {
+    function addNativeTokenLiquidity(address token1Address, uint token1Amount, uint slippage) external payable returns(uint nativeTokenAmountAdded, uint token1AmountAdded, uint liquidity) {
         uint contractAllowance = getAllowance(token1Address);
         require(contractAllowance > 0, "Allowance error");
 
         provideTokenAllowance(msg.sender, token1Address, token1Amount);
 
+        uint nativeTokenAmount = msg.value; 
+
+        uint nativeTokenSlippage = nativeTokenAmount.mul(slippage)/100; 
+        uint token1Slippage = token1Amount.mul(slippage)/100; 
+
+        uint nativeTokenMin = nativeTokenAmount.sub(nativeTokenSlippage);
+        uint token1AmountMin = token1Amount.sub(token1Slippage);
+
         uint deadline = block.timestamp + 5 minutes;
 
-        (nativeTokenAmountAdded, token1AmountAdded, liquidity) = router.addLiquidityETH(
+        (nativeTokenAmountAdded, token1AmountAdded, liquidity) = router.addLiquidityETH{value: msg.value}(
             token1Address, 
             token1Amount,
-            token1Amount, 
-            msg.value, 
+            token1AmountMin, 
+            nativeTokenMin, 
             msg.sender, 
             deadline
         );
     }
+
+    fallback() external payable { }
+    receive() external payable {}
 
 }
 
@@ -177,4 +191,20 @@ interface IERC20 {
         address recipient,
         uint amount
     ) external returns (bool);
+}
+
+// a library for performing overflow-safe math, courtesy of DappHub (https://github.com/dapphub/ds-math)
+
+library SafeMath {
+    function add(uint x, uint y) internal pure returns (uint z) {
+        require((z = x + y) >= x, 'ds-math-add-overflow');
+    }
+
+    function sub(uint x, uint y) internal pure returns (uint z) {
+        require((z = x - y) <= x, 'ds-math-sub-underflow');
+    }
+
+    function mul(uint x, uint y) internal pure returns (uint z) {
+        require(y == 0 || (z = x * y) / y == x, 'ds-math-mul-overflow');
+    }
 }
