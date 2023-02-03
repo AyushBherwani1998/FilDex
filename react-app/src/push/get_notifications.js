@@ -10,7 +10,7 @@ async function getUserNotifications(reciepient) {
 }
 
 function filterNotifications(notification) {
-    return notification.app == "FilDex";
+    return notification.app === "FilDex";
 }
 
 export default getUserNotifications;
