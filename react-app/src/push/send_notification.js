@@ -1,11 +1,11 @@
 import * as PushAPI from "@pushprotocol/restapi";
 import * as ethers from "ethers";
+import { channelAddress } from "./constants";
 
 
 const PK = process.env.REACT_APP_PRIVATE_KEY;
 const Pkey = `0x${PK}`;
 const signer = new ethers.Wallet(Pkey);
-const channelAddress = "0x458B534Bb7857F5b9A761D71ffA40f41B6c6D51b";
 
 async function sendNotification(title, body, recipient, cta = '') {
     try {
