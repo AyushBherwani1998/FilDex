@@ -4,8 +4,6 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { MetaMaskProvider } from "metamask-react";
-import requestForChannelOptIn from "./push/opt_int_channel";
-import isUserSubscribed from "./push/get_channels";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
