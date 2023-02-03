@@ -6,7 +6,11 @@ async function getUserNotifications(reciepient) {
         env: 'staging'
     });
 
-    return notifications;
+    return notifications.filter(filterNotifications);
+}
+
+function filterNotifications(notification) {
+    return notification.app == "FilDex";
 }
 
 export default getUserNotifications;
