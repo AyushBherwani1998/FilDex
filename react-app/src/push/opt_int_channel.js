@@ -4,7 +4,7 @@ import * as ethers from "ethers";
 
 
 async function requestForChannelOptIn(userAddress) {
-    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const _ = await window.ethereum.request({ method: 'eth_requestAccounts' });
     const provider = new ethers.providers.Web3Provider(window.ethereum);
 
     await PushAPI.channels.subscribe({
