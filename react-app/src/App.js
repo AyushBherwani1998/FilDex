@@ -16,7 +16,8 @@ import TokenDropList from "./components/TokenDropList";
 // 2. Select a Token case in Drop Down - done
 // 3. Call Swap with both token data - done
 // 4. Approval Handling - done
-// 5. Transaction Success and Failure
+// 5. Transaction Success and Failure and loading
+// 6. Make Generic Component for Success and Failure
 
 function App() {
   const [qty, setQty] = useState("0");
@@ -55,13 +56,6 @@ function App() {
       return;
     }
 
-    const fromTokenAllowance = await fromToken.getAllowance(account, swapAbi.address);
-    console.log(fromTokenAllowance);
-    if (fromTokenAllowance <= 0) {
-      setIsApprovalNeeded(true);
-      return;
-    }
-
     const data = await swapContract.swapNonNativeToken(
       account,
       fromToken.address,
@@ -79,22 +73,41 @@ function App() {
         return;
       }
 
+      if (qty === "0") {
+        console.log("Enter some quantity");
+        return;
+      }
+
       const data = await fromToken.approveContract(
         account,
         swapAbi.address,
         "10000000000000000"
       );
       console.log(data);
-      setIsApprovalNeeded(false);
     } catch (e) {
       console.log("Failed Approval " + e);
-      setIsApprovalNeeded(true);
+    } finally {
+      getAllowance(fromToken);
     }
   }
 
   function getTokenFromIndex(index) {
     const keys = Object.keys(tokens);
     return tokens[keys[index]];
+  }
+
+  async function getAllowance(token) {
+    const fromTokenAllowance = await token.getAllowance(
+      account,
+      swapAbi.address
+    );
+    console.log(fromTokenAllowance);
+    if (fromTokenAllowance <= 0) {
+      setIsApprovalNeeded(true);
+      return;
+    } else {
+      setIsApprovalNeeded(false);
+    }
   }
 
   return (
@@ -117,6 +130,7 @@ function App() {
             updateSelectedToken={(token, isFromToken) => {
               if (isFromToken) {
                 setFromToken(token);
+                getAllowance(token);
               } else {
                 setToToken(token);
               }
