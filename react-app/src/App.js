@@ -1,6 +1,5 @@
 import ConnectWalletButton from "./components/ConnectWalletButton";
 import TokenSelectDropDown from "./components/TokenSelectDropDown";
-import fileCoinLogo from "./assets/filcoin_logo.svg";
 import TokenQuantityInput from "./components/TokenQuantityInput";
 import TokenQtyValueView from "./components/TokenQtyValueView";
 import { useMetaMask } from "metamask-react";
@@ -10,23 +9,31 @@ import FilDexConstants from "./Constants";
 import makeSwapContract from "./contracts/SwapContract";
 import swapAbi from "./abi/SwapABI";
 import makeTokens from "./data/make_tokens";
+import TokenDropList from "./components/TokenDropList";
 
 // 0xda92bbfd4b6764a3eb6e658c9517269af8b9ff19cc1f5e8ba72fc11b616740ce
 
 function App() {
   const { status, connect, account, chainId, ethereum } = useMetaMask();
   const [web3, setWeb3] = useState(null);
+  const [tokens, setTokens] = useState(null);
+  const [fromToken, setFromToken] = useState(null);
+  const [showDropDown, toggleDropDown] = useState(false);
 
   useEffect(() => {
     if (ethereum !== null && web3 === null) {
       setWeb3(new Web3(ethereum));
+
       return;
+    }
+
+    if (web3 !== null || ethereum !== null) {
+      setTokens(makeTokens(web3));
     }
   }, [ethereum, web3]);
 
   async function swap() {
     const swapContract = makeSwapContract(web3, swapAbi.abi, swapAbi.address);
-    const tokens = makeTokens(web3);
 
     const data = await swapContract.swapNativeToken(
       account,
@@ -35,6 +42,11 @@ function App() {
     );
 
     console.log(data);
+  }
+
+  function getTokenFromIndex(index) {
+    const keys = Object.keys(tokens);
+    return tokens[keys[index]];
   }
 
   return (
@@ -47,32 +59,41 @@ function App() {
           }}
           account={account}
           chainId={chainId}
-          onProvider={async (provider, account) => {}}
         />
       </div>
       <div className="flex flex-row justify-center">
-        <div className="flex justify-start flex-col m-8 bg-slight-black text-grey-font rounded-lg p-4">
-          <div className="text-sm mb-6">You send</div>
-          <div className="flex justify-start">
-            <TokenSelectDropDown
-              tokenName="FIL"
-              tokenBalance="11112.23"
-              tokenLogo={fileCoinLogo}
-            />
-            <div className="ml-2" />
-            <TokenQuantityInput />
+        {showDropDown ? (
+          <TokenDropList
+            tokens={tokens}
+            toggleDropDown={toggleDropDown}
+            updateSelectedToken={setFromToken}
+          />
+        ) : (
+          <div className="flex justify-start flex-col m-8 bg-slight-black text-grey-font rounded-lg p-4 w-1/2">
+            <div className="text-sm mb-6">You send</div>
+            <div className="flex justify-start">
+              {tokens && (
+                <TokenSelectDropDown
+                  token={fromToken ?? getTokenFromIndex(0)}
+                  account={account}
+                  toggleDropDown={toggleDropDown}
+                />
+              )}
+              <div className="ml-2" />
+              <TokenQuantityInput />
+            </div>
+            <div className="mb-8" />
+            <hr className="border-divider-dark border" />
+            <div className="mb-4" />
+            <div className="text-sm mb-6">You receive</div>
+            <div className="flex justify-start">
+              {/* <TokenSelectDropDown /> */}
+              <div className="ml-2" />
+              <TokenQtyValueView tokenQuantity="12.23" tokenPrice="0.00" />
+            </div>
+            <div className="mb-4" />
           </div>
-          <div className="mb-8" />
-          <hr className="border-divider-dark border" />
-          <div className="mb-4" />
-          <div className="text-sm mb-6">You receive</div>
-          <div className="flex justify-start">
-            <TokenSelectDropDown />
-            <div className="ml-2" />
-            <TokenQtyValueView tokenQuantity="12.23" tokenPrice="0.00" />
-          </div>
-          <div className="mb-4" />
-        </div>
+        )}
       </div>
       <div className="flex justify-center">
         <button
