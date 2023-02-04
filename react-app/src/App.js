@@ -4,7 +4,6 @@ import fileCoinLogo from "./assets/filcoin_logo.svg";
 import TokenQuantityInput from "./components/TokenQuantityInput";
 import TokenQtyValueView from "./components/TokenQtyValueView";
 import { useState } from "react";
-import OptinBanner from "./components/push/NotificationOptinBanner";
 
 function App() {
   const [qty, setQty] = useState("");
