@@ -21,7 +21,7 @@ export default function ConnectWalletButton({ onProvider }) {
   if (status === "connecting") return <div>Connecting...</div>;
 
   if (status === "connected") {
-    onProvider(ethereum);
+    onProvider(ethereum, account);
     return (
       <div className="text-white">
         Connected account {account} on chain ID {chainId}

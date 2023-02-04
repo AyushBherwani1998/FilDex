@@ -1,9 +1,8 @@
 import Web3 from "web3";
-import swapABI from "./abi/SwapABI";
 
-export default function makeSwapContract(provider) {
+export default function makeSwapContract(provider, abi, address) {
   const web3 = new Web3(provider);
 
-  const swapContract = new web3.eth.Contract(swapABI.abi, swapABI.address);
-  return swapContract;
+  const contract = new web3.eth.Contract(abi, address);
+  return contract;
 }
