@@ -34,6 +34,8 @@ export default function makeTokenContract(
 
   async function balanceOf(accountAddress) {
     const res = await tokenContract.methods.balanceOf(accountAddress).call();
-    return web3.utils.fromWei(res, "ether");
+    return Number(
+      parseFloat(web3.utils.fromWei(res, "ether")).toFixed(3)
+    ).toString();
   }
 }

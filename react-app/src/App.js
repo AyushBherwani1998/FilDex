@@ -11,14 +11,23 @@ import swapAbi from "./abi/SwapABI";
 import makeTokens from "./data/make_tokens";
 import TokenDropList from "./components/TokenDropList";
 
-// 0xda92bbfd4b6764a3eb6e658c9517269af8b9ff19cc1f5e8ba72fc11b616740ce
+// TODO(someshubham):
+// 1. Trim Balance Data - done
+// 2. Select a Token case in Drop Down - done
+// 3. Call Swap with both token data
+// 4. Approval Handling
+// 5. Transaction Success and Failure
 
 function App() {
+  const [qty, setQty] = useState("0");
   const { status, connect, account, chainId, ethereum } = useMetaMask();
   const [web3, setWeb3] = useState(null);
   const [tokens, setTokens] = useState(null);
   const [fromToken, setFromToken] = useState(null);
+  const [toToken, setToToken] = useState(null);
   const [showDropDown, toggleDropDown] = useState(false);
+
+  const [isFromTokenDropDown, setIsFromTokenDropDown] = useState(true);
 
   useEffect(() => {
     if (ethereum !== null && web3 === null) {
@@ -35,10 +44,21 @@ function App() {
   async function swap() {
     const swapContract = makeSwapContract(web3, swapAbi.abi, swapAbi.address);
 
-    const data = await swapContract.swapNativeToken(
+    if (toToken === null || fromToken === null) {
+      console.log("Cannot Swap Empty Values");
+      return;
+    }
+
+    if (qty === "0") {
+      console.log("Enter some quantity");
+      return;
+    }
+
+    const data = await swapContract.swapNonNativeToken(
       account,
-      tokens.tt1.address,
-      web3.utils.toWei("0.0001", "ether")
+      fromToken.address,
+      toToken.address,
+      web3.utils.toWei(qty, "ether")
     );
 
     console.log(data);
@@ -66,7 +86,14 @@ function App() {
           <TokenDropList
             tokens={tokens}
             toggleDropDown={toggleDropDown}
-            updateSelectedToken={setFromToken}
+            updateSelectedToken={(token, isFromToken) => {
+              if (isFromToken) {
+                setFromToken(token);
+              } else {
+                setToToken(token);
+              }
+            }}
+            isFromTokenDropDown={isFromTokenDropDown}
           />
         ) : (
           <div className="flex justify-start flex-col m-8 bg-slight-black text-grey-font rounded-lg p-4 w-1/2">
@@ -76,18 +103,30 @@ function App() {
                 <TokenSelectDropDown
                   token={fromToken ?? getTokenFromIndex(0)}
                   account={account}
-                  toggleDropDown={toggleDropDown}
+                  toggleDropDown={(value) => {
+                    setIsFromTokenDropDown(true);
+                    toggleDropDown(value);
+                  }}
                 />
               )}
               <div className="ml-2" />
-              <TokenQuantityInput />
+              <TokenQuantityInput onInput={setQty} />
             </div>
             <div className="mb-8" />
             <hr className="border-divider-dark border" />
             <div className="mb-4" />
             <div className="text-sm mb-6">You receive</div>
             <div className="flex justify-start">
-              {/* <TokenSelectDropDown /> */}
+              {tokens && (
+                <TokenSelectDropDown
+                  token={toToken}
+                  account={account}
+                  toggleDropDown={(value) => {
+                    setIsFromTokenDropDown(false);
+                    toggleDropDown(value);
+                  }}
+                />
+              )}
               <div className="ml-2" />
               <TokenQtyValueView tokenQuantity="12.23" tokenPrice="0.00" />
             </div>
