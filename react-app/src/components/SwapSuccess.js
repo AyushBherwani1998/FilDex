@@ -3,7 +3,7 @@ import fileLogo from "../assets/filcoin_logo.svg";
 
 export default function SwapSuccess({ fromName, toName, fromQty, toQty }) {
   return (
-    <div className="flex justify-start flex-col m-8 text-white rounded-lg p-4 w-1/2 bg-gradient-to-b from-gradient-green to-gradient-black">
+    <div className="flex justify-start flex-col m-8 text-white rounded-lg p-4 w-1/3 bg-gradient-to-b from-gradient-green to-gradient-black">
       <div className="flex justify-center my-2">
         <img src={successLogo} alt="Success" />
       </div>

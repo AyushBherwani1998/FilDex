@@ -7,7 +7,7 @@ export default function TokenDropList({
   isFromTokenDropDown,
 }) {
   return (
-    <div className="flex justify-start flex-col m-8 bg-slight-black text-grey-font rounded-lg p-4 w-1/2">
+    <div className="flex justify-start flex-col m-8 bg-slight-black text-grey-font rounded-lg p-4 w-1/3">
       {tokens && (
         <div className="flex flex-col">
           <div className="flex flex-row">
