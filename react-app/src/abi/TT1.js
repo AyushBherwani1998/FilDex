@@ -284,6 +284,6 @@ const abi = [
   },
 ];
 
-const dai = { address, abi };
+const tt1 = { address, abi };
 
-export default dai;
+export default tt1;

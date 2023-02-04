@@ -1,14 +1,18 @@
-import { useMetaMask } from "metamask-react";
+import FilDexConstants from "../Constants";
 
-export default function ConnectWalletButton({ onProvider }) {
-  const { status, connect, account, chainId, ethereum } = useMetaMask();
-
-  if (status === "initializing")
+export default function ConnectWalletButton({
+  status,
+  connect,
+  account,
+  chainId,
+}) {
+  if (status === FilDexConstants.initializing)
     return <div>Synchronisation with MetaMask ongoing...</div>;
 
-  if (status === "unavailable") return <div>MetaMask not available :(</div>;
+  if (status === FilDexConstants.unavailable)
+    return <div>MetaMask not available :(</div>;
 
-  if (status === "notConnected")
+  if (status === FilDexConstants.notConnected)
     return (
       <button
         onClick={connect}
@@ -18,10 +22,9 @@ export default function ConnectWalletButton({ onProvider }) {
       </button>
     );
 
-  if (status === "connecting") return <div>Connecting...</div>;
+  if (status === FilDexConstants.connecting) return <div>Connecting...</div>;
 
-  if (status === "connected") {
-    onProvider(ethereum, account);
+  if (status === FilDexConstants.connected) {
     return (
       <div className="text-white">
         Connected account {account} on chain ID {chainId}
