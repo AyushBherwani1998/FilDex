@@ -13,8 +13,8 @@ import web3 from "../../web3";
 function WrapperView() {
   const [qty, setQty] = useState("");
 
-  const [tokenInSymbol, setTokenInSymbol] = useState("FIL");
-  const [tokenOutSymbol, setTokenOutSymbol] = useState("TFIL");
+  const [tokenInSymbol, setTokenInSymbol] = useState("TFIL");
+  const [tokenOutSymbol, setTokenOutSymbol] = useState("WTFIL");
 
   const { status, connect, account, ethereum } = useMetaMask();
 
@@ -34,7 +34,7 @@ function WrapperView() {
       } else {
         const weiQty = web3.utils.toWei(qty, "ether");
         var tx;
-        if (tokenInSymbol === "FIL") {
+        if (tokenInSymbol === "TFIL") {
           tx = await wtFilContract.methods.deposit().send({
             value: weiQty,
             from: account,
