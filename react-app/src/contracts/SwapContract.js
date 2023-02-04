@@ -8,7 +8,21 @@ export default function makeSwapContract(web3, abi, address) {
     getTokenAllowance,
     swapNativeToken,
     swapNonNativeToken,
+    getNonNativeQuote,
   });
+
+  async function getNonNativeQuote(
+    fromAddress,
+    toAddress,
+    fromQty = "10000000000000"
+  ) {
+    const data = await swapContract.methods
+      .getQuote(fromAddress, toAddress, web3.utils.toWei(fromQty, "ether"))
+      .call();
+    return Number(
+      parseFloat(web3.utils.fromWei(data, "ether")).toFixed(3)
+    ).toString();
+  }
 
   async function getTokenAllowance(tokenAddress) {
     const data = await swapContract.methods.getAllowance(tokenAddress).call();

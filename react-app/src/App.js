@@ -10,6 +10,7 @@ import makeSwapContract from "./contracts/SwapContract";
 import swapAbi from "./abi/SwapABI";
 import makeTokens from "./data/make_tokens";
 import TokenDropList from "./components/TokenDropList";
+import SwapSuccess from "./components/SwapSuccess";
 
 // TODO(someshubham):
 // 1. Trim Balance Data - done
@@ -21,6 +22,8 @@ import TokenDropList from "./components/TokenDropList";
 
 function App() {
   const [qty, setQty] = useState("0");
+  const [toQty, setToQty] = useState("0");
+
   const { status, connect, account, chainId, ethereum } = useMetaMask();
   const [web3, setWeb3] = useState(null);
   const [tokens, setTokens] = useState(null);
@@ -30,6 +33,9 @@ function App() {
   const [isApprovalNeeded, setIsApprovalNeeded] = useState(false);
 
   const [isFromTokenDropDown, setIsFromTokenDropDown] = useState(true);
+
+  const [isLoading, setLoading] = useState(false);
+  const [isSwapSuccess, setIsSwapSuccess] = useState(false);
 
   useEffect(() => {
     if (ethereum !== null && web3 === null) {
@@ -44,29 +50,38 @@ function App() {
   }, [ethereum, web3]);
 
   async function swap() {
-    const swapContract = makeSwapContract(web3, swapAbi.abi, swapAbi.address);
+    setLoading(true);
+    try {
+      const swapContract = makeSwapContract(web3, swapAbi.abi, swapAbi.address);
 
-    if (toToken === null || fromToken === null) {
-      console.log("Cannot Swap Empty Values");
-      return;
+      if (toToken === null || fromToken === null) {
+        console.log("Cannot Swap Empty Values");
+        return;
+      }
+
+      if (qty === "0") {
+        console.log("Enter some quantity");
+        return;
+      }
+
+      const data = await swapContract.swapNonNativeToken(
+        account,
+        fromToken.address,
+        toToken.address,
+        web3.utils.toWei(qty, "ether")
+      );
+      setIsSwapSuccess(true);
+      console.log(data);
+    } catch (e) {
+      setIsSwapSuccess(false);
+      console.log(e);
+    } finally {
+      setLoading(false);
     }
-
-    if (qty === "0") {
-      console.log("Enter some quantity");
-      return;
-    }
-
-    const data = await swapContract.swapNonNativeToken(
-      account,
-      fromToken.address,
-      toToken.address,
-      web3.utils.toWei(qty, "ether")
-    );
-
-    console.log(data);
   }
 
   async function approve() {
+    setLoading(true);
     try {
       if (fromToken === null) {
         console.log("From Token cannot be null");
@@ -87,6 +102,7 @@ function App() {
     } catch (e) {
       console.log("Failed Approval " + e);
     } finally {
+      setLoading(false);
       getAllowance(fromToken);
     }
   }
@@ -110,6 +126,21 @@ function App() {
     }
   }
 
+  async function updateQuantities(fromQty) {
+    const swapContract = makeSwapContract(web3, swapAbi.abi, swapAbi.address);
+
+    if (fromToken !== null && toToken !== null && fromQty !== null) {
+      const toQuantity = await swapContract.getNonNativeQuote(
+        fromToken.address,
+        toToken.address,
+        fromQty
+      );
+      console.log(toQuantity);
+      setQty(fromQty);
+      setToQty(toQuantity);
+    }
+  }
+
   return (
     <div>
       <div className="flex justify-end mr-4 mt-4">
@@ -123,7 +154,14 @@ function App() {
         />
       </div>
       <div className="flex flex-row justify-center">
-        {showDropDown ? (
+        {isSwapSuccess ? (
+          <SwapSuccess
+            toName={toToken.name}
+            fromName={fromToken.name}
+            fromQty={qty}
+            toQty={toQty}
+          />
+        ) : showDropDown ? (
           <TokenDropList
             tokens={tokens}
             toggleDropDown={toggleDropDown}
@@ -152,7 +190,7 @@ function App() {
                 />
               )}
               <div className="ml-2" />
-              <TokenQuantityInput onInput={setQty} />
+              <TokenQuantityInput onInput={updateQuantities} />
             </div>
             <div className="mb-8" />
             <hr className="border-divider-dark border" />
@@ -170,29 +208,44 @@ function App() {
                 />
               )}
               <div className="ml-2" />
-              <TokenQtyValueView tokenQuantity="12.23" tokenPrice="0.00" />
+              <TokenQtyValueView tokenQuantity={toQty} tokenPrice="0.00" />
             </div>
             <div className="mb-4" />
           </div>
         )}
       </div>
       <div className="flex justify-center">
-        <button
-          className="rounded-full bg-white px-20 py-3 text-xl"
-          onClick={
-            status === FilDexConstants.connected
+        {isSwapSuccess ? (
+          <button
+            className="rounded-full bg-white px-20 py-3 text-xl"
+            onClick={() => {
+              setIsSwapSuccess(false);
+            }}
+          >
+            Return to swap
+          </button>
+        ) : isLoading ? (
+          <button className="rounded-full bg-loading-fill px-20 py-3 text-xl text-black">
+            Submitting ...
+          </button>
+        ) : (
+          <button
+            className="rounded-full bg-white px-20 py-3 text-xl"
+            onClick={
+              status === FilDexConstants.connected
+                ? isApprovalNeeded
+                  ? approve
+                  : swap
+                : connect
+            }
+          >
+            {status === FilDexConstants.connected
               ? isApprovalNeeded
-                ? approve
-                : swap
-              : connect
-          }
-        >
-          {status === FilDexConstants.connected
-            ? isApprovalNeeded
-              ? "Approve"
-              : "Swap"
-            : "Connect"}
-        </button>
+                ? "Approve"
+                : "Swap"
+              : "Connect"}
+          </button>
+        )}
       </div>
     </div>
   );
@@ -201,6 +254,9 @@ function App() {
 export default App;
 
 /*
+
+  
+
 swapContract = makeSwapContract(
               provider,
               swapABI.abi,

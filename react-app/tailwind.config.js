@@ -10,7 +10,10 @@ module.exports = {
         "placeholder-dark-text": "#47494B",
         "divider-dark": "#1B1B1B",
         "hover-fill": "#1F2226",
-        "hover-stroke": "rgba(255, 255, 255, 0.1)",
+        "hover-stroke": "#ffffff1a",
+        "loading-fill": "#ffffff4d",
+        "gradient-green": "#225338",
+        "gradient-black": "#090F0A"
       },
     },
   },
