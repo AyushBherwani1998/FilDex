@@ -25,20 +25,16 @@ function App() {
   }, [ethereum, web3]);
 
   async function swap() {
-    if (status === FilDexConstants.connected) {
-      const swapContract = makeSwapContract(web3, swapAbi.abi, swapAbi.address);
-      const tokens = makeTokens(web3);
+    const swapContract = makeSwapContract(web3, swapAbi.abi, swapAbi.address);
+    const tokens = makeTokens(web3);
 
-      const data = await swapContract.swapNativeToken(
-        account,
-        tokens.tt1.address,
-        web3.utils.toWei("0.0001", "ether")
-      );
+    const data = await swapContract.swapNativeToken(
+      account,
+      tokens.tt1.address,
+      web3.utils.toWei("0.0001", "ether")
+    );
 
-      console.log(data);
-    } else {
-      connect();
-    }
+    console.log(data);
   }
 
   return (
