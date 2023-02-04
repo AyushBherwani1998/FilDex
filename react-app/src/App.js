@@ -9,7 +9,7 @@ import Web3 from "web3";
 import FilDexConstants from "./Constants";
 import makeSwapContract from "./contracts/SwapContract";
 import swapAbi from "./abi/SwapABI";
-import makeTokens from "./utils/make_tokens";
+import makeTokens from "./data/make_tokens";
 
 // 0xda92bbfd4b6764a3eb6e658c9517269af8b9ff19cc1f5e8ba72fc11b616740ce
 
