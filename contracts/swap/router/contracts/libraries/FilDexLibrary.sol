@@ -21,7 +21,7 @@ library FilDexLibrary {
                 hex'ff',
                 factory,
                 keccak256(abi.encodePacked(token0, token1)),
-                hex'5acb595a1c12a8a7ec06a67ca863d9fe26597efa10683e8afeb81cbb54a47c4f' // init code hash
+                hex'6270eff7dc889fb2d783f8739d1ad044bbe807a2dd1086498813b45bcb4dc293' // init code hash
             ))));
     }
 
