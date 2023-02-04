@@ -7,7 +7,7 @@ import TokenQtyValueView from "../TokenQtyValueView";
 import { useState } from "react";
 import { useMetaMask } from "metamask-react";
 import makeContract from "../../utils/makeContract";
-import { WTFIL_ABI, WTFIL_ADDRESS } from "../../tokens/WTFIL";
+import { WTFIL_ABI, WTFIL_ADDRESS } from "../../utils/tokenConstants";
 import web3 from "../../web3";
 
 function WrapperView() {
