@@ -11,7 +11,7 @@ export default function makeSwapContract(web3, abi, address) {
   });
 
   async function getTokenAllowance(tokenAddress) {
-    const data = await swapContract.methods.getAllowance(tokenAddress);
+    const data = await swapContract.methods.getAllowance(tokenAddress).call();
     return data;
   }
 

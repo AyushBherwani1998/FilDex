@@ -16,6 +16,7 @@ export default function makeTokenContract(
     abi: tokenAbi,
     approveContract,
     balanceOf,
+    getAllowance,
   });
 
   async function approveContract(
@@ -24,11 +25,18 @@ export default function makeTokenContract(
     allowance = "10000000000000"
   ) {
     const res = await tokenContract.methods
-      .approve(contractAddress, contractAddress, allowance)
+      .approve(contractAddress, allowance)
       .send({
         from: accountAddress,
         value: 0,
       });
+    return res;
+  }
+
+  async function getAllowance(accountAddress, contractAddress) {
+    const res = await tokenContract.methods
+      .allowance(accountAddress, contractAddress)
+      .call();
     return res;
   }
 

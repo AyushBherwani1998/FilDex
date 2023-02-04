@@ -14,8 +14,8 @@ import TokenDropList from "./components/TokenDropList";
 // TODO(someshubham):
 // 1. Trim Balance Data - done
 // 2. Select a Token case in Drop Down - done
-// 3. Call Swap with both token data
-// 4. Approval Handling
+// 3. Call Swap with both token data - done
+// 4. Approval Handling - done
 // 5. Transaction Success and Failure
 
 function App() {
@@ -26,6 +26,7 @@ function App() {
   const [fromToken, setFromToken] = useState(null);
   const [toToken, setToToken] = useState(null);
   const [showDropDown, toggleDropDown] = useState(false);
+  const [isApprovalNeeded, setIsApprovalNeeded] = useState(false);
 
   const [isFromTokenDropDown, setIsFromTokenDropDown] = useState(true);
 
@@ -54,6 +55,13 @@ function App() {
       return;
     }
 
+    const fromTokenAllowance = await fromToken.getAllowance(account, swapAbi.address);
+    console.log(fromTokenAllowance);
+    if (fromTokenAllowance <= 0) {
+      setIsApprovalNeeded(true);
+      return;
+    }
+
     const data = await swapContract.swapNonNativeToken(
       account,
       fromToken.address,
@@ -62,6 +70,26 @@ function App() {
     );
 
     console.log(data);
+  }
+
+  async function approve() {
+    try {
+      if (fromToken === null) {
+        console.log("From Token cannot be null");
+        return;
+      }
+
+      const data = await fromToken.approveContract(
+        account,
+        swapAbi.address,
+        "10000000000000000"
+      );
+      console.log(data);
+      setIsApprovalNeeded(false);
+    } catch (e) {
+      console.log("Failed Approval " + e);
+      setIsApprovalNeeded(true);
+    }
   }
 
   function getTokenFromIndex(index) {
@@ -137,9 +165,19 @@ function App() {
       <div className="flex justify-center">
         <button
           className="rounded-full bg-white px-20 py-3 text-xl"
-          onClick={status === FilDexConstants.connected ? swap : connect}
+          onClick={
+            status === FilDexConstants.connected
+              ? isApprovalNeeded
+                ? approve
+                : swap
+              : connect
+          }
         >
-          {status === FilDexConstants.connected ? "Swap" : "Connect"}
+          {status === FilDexConstants.connected
+            ? isApprovalNeeded
+              ? "Approve"
+              : "Swap"
+            : "Connect"}
         </button>
       </div>
     </div>
