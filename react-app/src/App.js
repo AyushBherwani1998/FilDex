@@ -1,5 +1,5 @@
 import { useMetaMask } from "metamask-react";
-import ConnectWalletButton from "./components/ConnectWalletButton";
+import AppBar from "./AppBar";
 import SwapApp from "./SwapApp";
 
 export default function App() {
@@ -7,14 +7,12 @@ export default function App() {
 
   return (
     <div className="flex flex-col">
-      <div className="flex justify-end mr-4 mt-4">
-        <ConnectWalletButton
-          status={status}
-          connect={connect}
-          account={account}
-          chainId={chainId}
-        />
-      </div>
+      <AppBar
+        status={status}
+        connect={connect}
+        chainId={chainId}
+        account={account}
+      />
       <SwapApp
         status={status}
         connect={connect}
