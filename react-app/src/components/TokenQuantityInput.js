@@ -8,9 +8,7 @@ export default function TokenQuantityInput({ onInput }) {
           placeholder="Enter 0.1, 100, 10%..."
           className="bg-inherit border-none text-white rounded-tl-lg placeholder:text-sm placeholder:text-placeholder-dark-text ml-3 mt-1 focus:outline-none"
         />
-        <div className="text-xs mb-2 ml-3">$0.00</div>
       </div>
-      <div className="text-white text-xs mt-2 mr-3 ml-3">MAX</div>
     </div>
   );
 }
