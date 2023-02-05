@@ -1,4 +1,5 @@
 import makeContract from "../utils/make_contract";
+import FilDexConstants from "../Constants";
 
 export default function makeTokenContract(
   web3,
@@ -22,10 +23,10 @@ export default function makeTokenContract(
   async function approveContract(
     accountAddress,
     contractAddress,
-    allowance = "10000000000000"
+    allowance = "100000000000000000000000"
   ) {
     const res = await tokenContract.methods
-      .approve(contractAddress, allowance)
+      .approve(contractAddress, FilDexConstants.allowance)
       .send({
         from: accountAddress,
         value: 0,
@@ -34,14 +35,24 @@ export default function makeTokenContract(
   }
 
   async function getAllowance(accountAddress, contractAddress) {
-    const res = await tokenContract.methods
+    var res;
+    if(contractAddress === FilDexConstants.nativeContractAddress) {
+      res = FilDexConstants.allowance;
+    } else {
+      res = await tokenContract.methods
       .allowance(accountAddress, contractAddress)
       .call();
+    }
     return res;
   }
 
   async function balanceOf(accountAddress) {
-    const res = await tokenContract.methods.balanceOf(accountAddress).call();
+    var res;
+    if(tokenAddress === FilDexConstants.nativeContractAddress) {
+      res = await web3.eth.getBalance(accountAddress);
+    } else {
+      res = await tokenContract.methods.balanceOf(accountAddress).call();
+    }
     return Number(
       parseFloat(web3.utils.fromWei(res, "ether")).toFixed(3)
     ).toString();
