@@ -30,7 +30,7 @@ export default function TokenSelectDropDown({
     >
       <div className="flex flex-col justify-center pl-2">
         {token != null ? (
-          <img src={token.logo} alt="F" />
+          <img src={token.logo} alt="F" className="w-8" />
         ) : (
           <div className="p-4 border border-dashed rounded-full bg-placeholder-dark-text"></div>
         )}

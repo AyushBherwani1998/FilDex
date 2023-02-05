@@ -33,10 +33,9 @@ export default function TokenDropList({
                 }}
               >
                 <div className="group flex flex-row hover:bg-hover-fill p-3 rounded   ">
-                  <img src={token.logo} alt="F" className="pr-2" />
+                  <img src={token.logo} alt="F" className="pr-2 w-8" />
                   <div className="m-2 group-hover:text-white">{token.name}</div>
                 </div>
-            
               </div>
             );
           })}
