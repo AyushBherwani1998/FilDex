@@ -47,12 +47,12 @@ function LiquidityApp ({ status, connect, account, ethereum }) {
       const swapContract = makeSwapContract(web3, swapAbi.abi, swapAbi.address)
 
       if (toToken === null || fromToken === null) {
-        console.log('Cannot Swap Empty Values')
+        alert('Please select tokens')
         return
       }
 
       if (qty === '0') {
-        console.log('Enter some quantity')
+        alert('Enter some quantity')
         return
       }
 
@@ -89,17 +89,17 @@ function LiquidityApp ({ status, connect, account, ethereum }) {
     setLoading(true)
     try {
       if (fromToken === null) {
-        console.log('From Token cannot be null')
+        alert('select token 1')
         return
       }
 
       if (toToken === null) {
-        console.log('To Token cannot be null')
+        alert('select token 2')
         return
       }
 
       if (qty === '0') {
-        console.log('Enter some quantity')
+        alert('Enter some quantity')
         return
       }
 
@@ -152,7 +152,7 @@ function LiquidityApp ({ status, connect, account, ethereum }) {
 
   async function updateQuantities (fromQty) {
     const swapContract = makeSwapContract(web3, swapAbi.abi, swapAbi.address)
-    if (fromToken !== null && toToken !== null && fromQty !== null) {
+    if (fromToken !== null && toToken !== null && fromQty !== null && fromQty !== '') {
       var toQuantity
       console.log(fromQty)
       if (fromToken.address === FilDexConstants.nativeContractAddress) {
@@ -168,7 +168,7 @@ function LiquidityApp ({ status, connect, account, ethereum }) {
       setQty(fromQty)
       setToQty(toQuantity)
     } else {
-      setToQty('0')
+      setToQty('')
     }
   }
 

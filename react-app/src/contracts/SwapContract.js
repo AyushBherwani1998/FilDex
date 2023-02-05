@@ -69,8 +69,8 @@ export default function makeSwapContract (web3, abi, address) {
   ) {
     const data = await swapContract.methods
       .swapNonNativeToken(
-        fromTokenAddress, // TT1
-        toTokenAddress, // TT2
+        fromTokenAddress, 
+        toTokenAddress,
         web3.utils.toWei(swapAmount, 'ether')
       )
       .send({
