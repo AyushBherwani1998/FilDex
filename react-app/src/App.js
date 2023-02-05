@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NavigationBar from "./components/NavigationBar";
 import LotteryApp from "./pages/Lottery/Lottery";
 import SwapApp from "./pages/Swap";
-import WrapperView from "./pages/Wrap";
+import WrapApp from "./pages/Wrap";
 
 export default function App() {
   const { status, connect, account, chainId, ethereum } = useMetaMask();
@@ -18,18 +18,18 @@ export default function App() {
           account={account}
         />
         <Routes>
-          <Route
-            path="/"
-            element={
-              <SwapApp
-                status={status}
-                connect={connect}
-                account={account}
-                ethereum={ethereum}
-              />
-            }
-          />
-          <Route path="/wrap" element={<WrapperView />} />
+          <Route path='/' element={<SwapApp
+            status={status}
+            connect={connect}
+            account={account}
+            ethereum={ethereum}
+          />} />
+          <Route path='/wrap' element={<WrapApp
+            status={status}
+            connect={connect}
+            account={account}
+            ethereum={ethereum}
+          />} />
           <Route path="/lottery" element={<LotteryApp />} />
         </Routes>
       </BrowserRouter>
