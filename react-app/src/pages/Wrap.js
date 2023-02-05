@@ -4,19 +4,27 @@ import fileCoinLogo from "../assets/filcoin_logo.svg";
 import swapLogo from "../assets/swap.svg";
 import TokenQuantityInput from "../components/TokenQuantityInput";
 import TokenQtyValueView from "../components/TokenQtyValueView";
-import { useState } from "react";
-import { useMetaMask } from "metamask-react";
+import { useState, useEffect } from "react";
 import makeContract from "../utils/makeContract";
-import { WTFIL_ABI, WTFIL_ADDRESS } from "../abi/WERC20ABI";
-import web3 from "../web3";
+import werc20Abi from "../abi/WERC20ABI";
+import Web3 from "web3";
 
-function WrapperView() {
+function WrapApp({ status, connect, account, ethereum }) {
   const [qty, setQty] = useState("");
 
+  const [web3, setWeb3] = useState(null);
   const [tokenInSymbol, setTokenInSymbol] = useState("TFIL");
   const [tokenOutSymbol, setTokenOutSymbol] = useState("WTFIL");
+  const [isLoading, setLoading] = useState(false);
+  const [isSwapSuccess, setIsSwapSuccess] = useState(false);
 
-  const { status, connect, account, ethereum } = useMetaMask();
+  useEffect(() => {
+    if (ethereum !== null && web3 === null) {
+      setWeb3(new Web3(ethereum));
+
+      return;
+    }
+  }, [ethereum, web3]);
 
   function swapIcons() {
     const symbol = tokenInSymbol;
@@ -27,7 +35,7 @@ function WrapperView() {
   async function wrapperSwap() {
     if (status === "connected") {
       let intQty = parseInt(qty);
-      const wtFilContract = makeContract(ethereum, WTFIL_ABI, WTFIL_ADDRESS);
+      const wtFilContract = makeContract(ethereum, werc20Abi.abi, werc20Abi.wtFilAddress);
 
       if (isNaN(intQty)) {
         alert("Please enter input!")
@@ -94,12 +102,11 @@ function WrapperView() {
         <button
           class="rounded-full bg-white px-20 py-3 text-xl"
           onClick={wrapperSwap}
-        >
-          Swap
+        >Swap
         </button>
       </div>
     </div>
   );
 }
 
-export default WrapperView;
+export default WrapApp;

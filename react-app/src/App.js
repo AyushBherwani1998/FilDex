@@ -2,7 +2,7 @@ import { useMetaMask } from "metamask-react";
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import NavigationBar from "./components/NavigationBar";
 import SwapApp from "./pages/Swap";
-import WrapperView from "./pages/Wrap";
+import WrapApp from "./pages/Wrap";
 
 export default function App() {
   const { status, connect, account, chainId, ethereum } = useMetaMask();
@@ -23,8 +23,12 @@ export default function App() {
             account={account}
             ethereum={ethereum}
           />} />
-          <Route path='/wrap' element={<WrapperView />} />
-
+          <Route path='/wrap' element={<WrapApp
+            status={status}
+            connect={connect}
+            account={account}
+            ethereum={ethereum}
+          />} />
         </Routes>
       </BrowserRouter>
 
