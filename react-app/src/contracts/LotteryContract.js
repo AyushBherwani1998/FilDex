@@ -8,7 +8,21 @@ export default function makeLotteryContract(web3, abi, address) {
     address,
     viewCurrentLotteryId,
     viewUserInfoForLotteryId,
+    viewLottery,
+    buyTickets,
   });
+
+  async function buyTickets(account, lotteryId, ticketNumber) {
+    const data = await lotteryContract.methods
+      .buyTickets(lotteryId, ticketNumber)
+      .send({
+        from: account,
+        value: "0",
+      });
+    console.log("Buy Tickets");
+    console.log(data);
+    return data;
+  }
 
   async function viewCurrentLotteryId() {
     const data = await lotteryContract.methods.viewCurrentLotteryId().call();
@@ -18,14 +32,17 @@ export default function makeLotteryContract(web3, abi, address) {
   }
 
   async function viewUserInfoForLotteryId(account, lotteryId) {
-    const data = await lotteryContract.methods.viewUserInfoForLotteryId(
-      account,
-      lotteryId,
-      "0",
-      "25"
-    );
-
+    const data = await lotteryContract.methods
+      .viewUserInfoForLotteryId(account, lotteryId, "0", "25")
+      .call();
     console.log("User Data");
+    console.log(data);
+    return data;
+  }
+
+  async function viewLottery(lotteryId) {
+    const data = await lotteryContract.methods.viewLottery(lotteryId).call();
+    console.log("Lottery Data");
     console.log(data);
     return data;
   }
