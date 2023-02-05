@@ -25,7 +25,7 @@ contract FilDexLottery is IFilDexLottery, Ownable {
 
     uint256 public pendingInjectionNextLottery;
 
-    uint256 public constant MIN_LENGTH_LOTTERY = 4 hours;
+    uint256 public constant MIN_LENGTH_LOTTERY = 5 minutes;
 
     uint256 public constant MAX_LENGTH_LOTTERY = 4 days;
 
@@ -172,7 +172,7 @@ contract FilDexLottery is IFilDexLottery, Ownable {
         uint256 amountFilDexToTransfer = _lotteries[_lotteryId]
             .priceTicketInFDEX;
 
-        // Transfer FDEX tokens to this contract
+        // Transfer cake tokens to this contract
         filDexToken.safeTransferFrom(
             address(msg.sender),
             address(this),
@@ -309,7 +309,7 @@ contract FilDexLottery is IFilDexLottery, Ownable {
     }
 
     /**
-     * @notice Draw the final number, calculate reward in FDEX per group, and make lottery claimable
+     * @notice Draw the final number, calculate reward in CAKE per group, and make lottery claimable
      * @param _lotteryId: lottery id
      * @param _autoInjection: reinjects funds into next lottery (vs. withdrawing all)
      * @dev Callable by operator
@@ -375,7 +375,7 @@ contract FilDexLottery is IFilDexLottery, Ownable {
                         _lotteryId
                     ][transformedWinningNumber];
                 }
-                // A. No FDEX to distribute, they are added to the amount to withdraw to treasury address
+                // A. No CAKE to distribute, they are added to the amount to withdraw to treasury address
             } else {
                 _lotteries[_lotteryId].fdexPerBracket[j] = 0;
 
@@ -398,7 +398,7 @@ contract FilDexLottery is IFilDexLottery, Ownable {
         amountToWithdrawToTreasury += (_lotteries[_lotteryId]
             .amountCollectedInFDEX - amountToShareToWinners);
 
-        // Transfer FDEX to treasury address
+        // Transfer CAKE to treasury address
         filDexToken.safeTransfer(treasuryAddress, amountToWithdrawToTreasury);
 
         emit LotteryNumberDrawn(
@@ -411,7 +411,7 @@ contract FilDexLottery is IFilDexLottery, Ownable {
     /**
      * @notice Inject funds
      * @param _lotteryId: lottery id
-     * @param _amount: amount to inject in FDEX token
+     * @param _amount: amount to inject in CAKE token
      * @dev Callable by owner or injector address
      */
     function injectFunds(uint256 _lotteryId, uint256 _amount)
@@ -438,7 +438,7 @@ contract FilDexLottery is IFilDexLottery, Ownable {
      * @notice Start the lottery
      * @dev Callable by operator
      * @param _endTime: endTime of the lottery
-     * @param _priceTicketInFDEX: price of a ticket in FDEX
+     * @param _priceTicketInFDEX: price of a ticket in CAKE
      * @param _discountDivisor: the divisor to calculate the discount magnitude for bulks
      * @param _rewardsBreakdown: breakdown of rewards per bracket (must sum to 10,000)
      * @param _treasuryFee: treasury fee (10,000 = 100%, 100 = 1%)
