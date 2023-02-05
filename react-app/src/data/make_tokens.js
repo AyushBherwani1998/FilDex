@@ -11,8 +11,15 @@ const fUsdAddress = "0x9FB47Fa35ec3BFcE7DbcE3f490D1a389c3891a90";
 const fUsdtAddress = "0x0F6B18b1883aF4e4D6310500736e46EBE35cABA9";
 const fDexAddress = "0x360835e98f054fCBfC97fe6da0AfB1Ff435ce2BB";
 
+const daiAddress = "0x75Ab5AB1Eef154C0352Fc31D2428Cef80C7F8B33";
+
 export default function makeTokens(web3) {
   return Object.freeze({
+    dai: makeTokenContract(web3, erc20ABI.abi, daiAddress, {
+      name: "DAI",
+      logo: fileCoinLogo,
+    }),
+
     tt1: makeTokenContract(web3, erc20ABI.abi, tt1Address, {
       name: "TT1",
       logo: fileCoinLogo,
@@ -37,9 +44,14 @@ export default function makeTokens(web3) {
       name: "WTFIL",
       logo: fileCoinLogo,
     }),
-    tFil: makeTokenContract(web3, werc20Abi.abi, FilDexConstants.nativeContractAddress, {
-      name: "TFIL",
-      logo: fileCoinLogo,
-    }),
+    tFil: makeTokenContract(
+      web3,
+      werc20Abi.abi,
+      FilDexConstants.nativeContractAddress,
+      {
+        name: "TFIL",
+        logo: fileCoinLogo,
+      }
+    ),
   });
 }

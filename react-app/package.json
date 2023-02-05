@@ -10,6 +10,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "bootstrap": "^5.2.3",
+    "digit-roll-react": "^1.1.0",
     "ethers": "^5.7.2",
     "metamask-react": "^2.4.1",
     "mocha": "^10.2.0",
