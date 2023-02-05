@@ -4,6 +4,7 @@ import NavigationBar from "./components/NavigationBar";
 import LotteryApp from "./pages/Lottery/Lottery";
 import SwapApp from "./pages/Swap";
 import WrapApp from "./pages/Wrap";
+import LiquidityApp from "./pages/Liquidity";
 
 export default function App() {
   const { status, connect, account, chainId, ethereum } = useMetaMask();
@@ -51,6 +52,12 @@ export default function App() {
               />
             }
           />
+          <Route path='/liquidity' element={<LiquidityApp
+            status={status}
+            connect={connect}
+            account={account}
+            ethereum={ethereum}
+          />} />
         </Routes>
       </BrowserRouter>
     </div>

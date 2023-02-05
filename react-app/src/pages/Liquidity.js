@@ -11,7 +11,7 @@ import makeTokens from '../data/make_tokens'
 import TokenDropList from '../components/TokenDropList'
 import SwapSuccess from '../components/SwapSuccess'
 
-function SwapApp ({ status, connect, account, ethereum }) {
+function LiquidityApp ({ status, connect, account, ethereum }) {
   const [qty, setQty] = useState('0')
   const [toQty, setToQty] = useState('0')
 
@@ -20,12 +20,14 @@ function SwapApp ({ status, connect, account, ethereum }) {
   const [fromToken, setFromToken] = useState(null)
   const [toToken, setToToken] = useState(null)
   const [showDropDown, toggleDropDown] = useState(false)
-  const [isApprovalNeeded, setIsApprovalNeeded] = useState(false)
+  const [isFromTokenApprovalNeeded, setIsFromTokenApprovalNeeded] =
+    useState(false)
+  const [isToTokenApprovalNeeded, setIsToTokenApprovalNeeded] = useState(false)
 
   const [isFromTokenDropDown, setIsFromTokenDropDown] = useState(true)
 
   const [isLoading, setLoading] = useState(false)
-  const [isSwapSuccess, setIsSwapSuccess] = useState(false)
+  const [isSupplySuccess, setIsSupplySuccess] = useState(false)
 
   useEffect(() => {
     if (ethereum !== null && web3 === null) {
@@ -39,51 +41,49 @@ function SwapApp ({ status, connect, account, ethereum }) {
     }
   }, [ethereum, web3])
 
-  async function swap () {
+  async function supply () {
     setLoading(true)
     try {
       const swapContract = makeSwapContract(web3, swapAbi.abi, swapAbi.address)
 
       if (fromToken === null) {
-        alert('Please select send token')
+        alert('Please select token 1')
         return
       }
 
       if (toToken === null) {
-        alert('Please select receive token')
+        alert('Please select token 2')
         return
-      }
-
-      if(fromToken === toToken) {
-        alert('Send token and Receive token cannot be same');
       }
 
       if (qty === '0') {
-        alert('Enter valid quantity')
+        alert('Enter some quantity')
         return
       }
 
-      var data;
-      if(fromToken.address === FilDexConstants.nativeContractAddress) {
-        data = await swapContract.swapNativeToken(
+      var data
+      if (fromToken.address === FilDexConstants.nativeContractAddress) {
+        //supply native liquidity
+        data = await swapContract.addNativeTokenLiquidity(
           account,
           toToken.address,
-          qty
+          qty,
+          toQty
         )
       } else {
-        data = await swapContract.swapNonNativeToken(
+        //supply non native liquidity
+        data = await swapContract.addNonNativeTokenLiquidity(
           account,
           fromToken.address,
           toToken.address,
-          qty
+          qty,
+          toQty
         )
       }
-
-      
-      setIsSwapSuccess(true)
+      setIsSupplySuccess(true)
       console.log(data)
     } catch (e) {
-      setIsSwapSuccess(false)
+      setIsSupplySuccess(false)
       console.log(e)
     } finally {
       setLoading(false)
@@ -94,25 +94,43 @@ function SwapApp ({ status, connect, account, ethereum }) {
     setLoading(true)
     try {
       if (fromToken === null) {
-        alert('select from token')
+        alert('select token 1')
         return
+      }
+
+      if (toToken === null) {
+        alert('select token 2')
+        return
+      }
+
+      if(fromToken === toToken) {
+        alert('Token 1 and Token 2 cannot be same');
       }
 
       if (qty === '0') {
-        alert('Enter some quantity')
+        alert('Enter valid quantity')
         return
       }
 
-      const data = await fromToken.approveContract(
-        account,
-        swapAbi.address
-      )
+      var data
+      if (isFromTokenApprovalNeeded) {
+        data = await fromToken.approveContract(
+          account,
+          swapAbi.address
+        )
+      } else {
+        data = await toToken.approveContract(
+          account,
+          swapAbi.address
+        )
+      }
       console.log(data)
     } catch (e) {
       console.log('Failed Approval ' + e)
     } finally {
       setLoading(false)
       getAllowance(fromToken)
+      getAllowance(toToken)
     }
   }
 
@@ -123,18 +141,22 @@ function SwapApp ({ status, connect, account, ethereum }) {
     return token
   }
 
-  async function getAllowance (token) {
-    const fromTokenAllowance = await token.getAllowance(
-      account,
-      swapAbi.address
-    )
-    console.log(fromTokenAllowance)
-    if (fromTokenAllowance <= 0) {
-      setIsApprovalNeeded(true)
-      return
+  function approvaButtonText () {
+    if (isFromTokenApprovalNeeded) {
+      return `Approval ${fromToken.name}`
     } else {
-      setIsApprovalNeeded(false)
+      return `Approval ${toToken.name}`
     }
+  }
+
+  async function getAllowance (token) {
+    const tokenAllowance = await token.getAllowance(account, swapAbi.address)
+    if (token === fromToken) {
+      setIsFromTokenApprovalNeeded(tokenAllowance <= 0)
+    } else {
+      setIsToTokenApprovalNeeded(tokenAllowance <= 0)
+    }
+    return
   }
 
   async function updateQuantities (fromQty) {
@@ -155,14 +177,14 @@ function SwapApp ({ status, connect, account, ethereum }) {
       setQty(fromQty)
       setToQty(toQuantity)
     } else {
-      setToQty('0')
+      setToQty('')
     }
   }
 
   return (
     <div>
       <div className='flex flex-row justify-center'>
-        {isSwapSuccess ? (
+        {isSupplySuccess ? (
           <SwapSuccess
             toName={toToken.name}
             fromName={fromToken.name}
@@ -179,13 +201,14 @@ function SwapApp ({ status, connect, account, ethereum }) {
                 getAllowance(token)
               } else {
                 setToToken(token)
+                getAllowance(token)
               }
             }}
             isFromTokenDropDown={isFromTokenDropDown}
           />
         ) : (
           <div className='flex justify-start flex-col m-8 bg-slight-black text-grey-font rounded-lg p-4 w-1/3'>
-            <div className='text-sm mb-6'>You send</div>
+            <div className='text-sm mb-6'>Token 1</div>
             <div className='flex justify-start'>
               {tokens && (
                 <TokenSelectDropDown
@@ -203,7 +226,7 @@ function SwapApp ({ status, connect, account, ethereum }) {
             <div className='mb-8' />
             <hr className='border-divider-dark border' />
             <div className='mb-4' />
-            <div className='text-sm mb-6'>You receive</div>
+            <div className='text-sm mb-6'>Token 2</div>
             <div className='flex justify-start'>
               {tokens && (
                 <TokenSelectDropDown
@@ -223,14 +246,14 @@ function SwapApp ({ status, connect, account, ethereum }) {
         )}
       </div>
       <div className='flex justify-center'>
-        {isSwapSuccess ? (
+        {isSupplySuccess ? (
           <button
             className='rounded-full bg-white px-20 py-3 text-xl'
             onClick={() => {
-              setIsSwapSuccess(false)
+              setIsSupplySuccess(false)
             }}
           >
-            Return to swap
+            Return to Supply
           </button>
         ) : isLoading ? (
           <button className='rounded-full bg-loading-fill px-20 py-3 text-xl text-black'>
@@ -241,16 +264,16 @@ function SwapApp ({ status, connect, account, ethereum }) {
             className='rounded-full bg-white px-20 py-3 text-xl'
             onClick={
               status === FilDexConstants.connected
-                ? isApprovalNeeded
+                ? isFromTokenApprovalNeeded || isToTokenApprovalNeeded
                   ? approve
-                  : swap
+                  : supply
                 : connect
             }
           >
             {status === FilDexConstants.connected
-              ? isApprovalNeeded
-                ? 'Approve'
-                : 'Swap'
+              ? isFromTokenApprovalNeeded || isToTokenApprovalNeeded
+                ? approvaButtonText()
+                : 'Supply'
               : 'Connect'}
           </button>
         )}
@@ -259,4 +282,4 @@ function SwapApp ({ status, connect, account, ethereum }) {
   )
 }
 
-export default SwapApp;
+export default LiquidityApp
