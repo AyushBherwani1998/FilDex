@@ -11,15 +11,7 @@ import makeTokens from '../data/make_tokens'
 import TokenDropList from '../components/TokenDropList'
 import SwapSuccess from '../components/SwapSuccess'
 
-// TODO(someshubham):
-// 1. Trim Balance Data - done
-// 2. Select a Token case in Drop Down - done
-// 3. Call Swap with both token data - done
-// 4. Approval Handling - done
-// 5. Transaction Success and Failure and loading
-// 6. Make Generic Component for Success and Failure
-
-function SwapApp ({ status, connect, account, ethereum }) {
+function LiquidityApp ({ status, connect, account, ethereum }) {
   const [qty, setQty] = useState('0')
   const [toQty, setToQty] = useState('0')
 
@@ -28,12 +20,14 @@ function SwapApp ({ status, connect, account, ethereum }) {
   const [fromToken, setFromToken] = useState(null)
   const [toToken, setToToken] = useState(null)
   const [showDropDown, toggleDropDown] = useState(false)
-  const [isApprovalNeeded, setIsApprovalNeeded] = useState(false)
+  const [isFromTokenApprovalNeeded, setIsFromTokenApprovalNeeded] =
+    useState(false)
+  const [isToTokenApprovalNeeded, setIsToTokenApprovalNeeded] = useState(false)
 
   const [isFromTokenDropDown, setIsFromTokenDropDown] = useState(true)
 
   const [isLoading, setLoading] = useState(false)
-  const [isSwapSuccess, setIsSwapSuccess] = useState(false)
+  const [isSupplySuccess, setIsSupplySuccess] = useState(false)
 
   useEffect(() => {
     if (ethereum !== null && web3 === null) {
@@ -47,7 +41,7 @@ function SwapApp ({ status, connect, account, ethereum }) {
     }
   }, [ethereum, web3])
 
-  async function swap () {
+  async function supply () {
     setLoading(true)
     try {
       const swapContract = makeSwapContract(web3, swapAbi.abi, swapAbi.address)
@@ -62,16 +56,29 @@ function SwapApp ({ status, connect, account, ethereum }) {
         return
       }
 
-      const data = await swapContract.swapNonNativeToken(
-        account,
-        fromToken.address,
-        toToken.address,
-        web3.utils.toWei(qty, 'ether')
-      )
-      setIsSwapSuccess(true)
+      var data
+      if (fromToken.address === FilDexConstants.nativeContractAddress) {
+        //supply native liquidity
+        data = await swapContract.addNativeTokenLiquidity(
+          account,
+          toToken.address,
+          qty,
+          toQty
+        )
+      } else {
+        //supply non native liquidity
+        data = await swapContract.addNonNativeTokenLiquidity(
+          account,
+          fromToken.address,
+          toToken.address,
+          qty,
+          toQty
+        )
+      }
+      setIsSupplySuccess(true)
       console.log(data)
     } catch (e) {
-      setIsSwapSuccess(false)
+      setIsSupplySuccess(false)
       console.log(e)
     } finally {
       setLoading(false)
@@ -86,62 +93,89 @@ function SwapApp ({ status, connect, account, ethereum }) {
         return
       }
 
+      if (toToken === null) {
+        console.log('To Token cannot be null')
+        return
+      }
+
       if (qty === '0') {
         console.log('Enter some quantity')
         return
       }
 
-      const data = await fromToken.approveContract(
-        account,
-        swapAbi.address
-      )
+      var data
+      if (isFromTokenApprovalNeeded) {
+        data = await fromToken.approveContract(
+          account,
+          swapAbi.address
+        )
+      } else {
+        data = await toToken.approveContract(
+          account,
+          swapAbi.address
+        )
+      }
       console.log(data)
     } catch (e) {
       console.log('Failed Approval ' + e)
     } finally {
       setLoading(false)
       getAllowance(fromToken)
+      getAllowance(toToken)
     }
   }
 
-  function getTokenFromIndex (index) {
+  function getFromTokenFromIndex (index) {
     const keys = Object.keys(tokens)
-    return tokens[keys[index]]
+    const token = tokens[keys[index]]
+    setFromToken(token)
+    return token
+  }
+
+  function approvaButtonText () {
+    if (isFromTokenApprovalNeeded) {
+      return `Approval ${fromToken.name}`
+    } else {
+      return `Approval ${toToken.name}`
+    }
   }
 
   async function getAllowance (token) {
-    const fromTokenAllowance = await token.getAllowance(
-      account,
-      swapAbi.address
-    )
-    console.log(fromTokenAllowance)
-    if (fromTokenAllowance <= 0) {
-      setIsApprovalNeeded(true)
-      return
+    const tokenAllowance = await token.getAllowance(account, swapAbi.address)
+    if (token === fromToken) {
+      setIsFromTokenApprovalNeeded(tokenAllowance <= 0)
     } else {
-      setIsApprovalNeeded(false)
+      setIsToTokenApprovalNeeded(tokenAllowance <= 0)
     }
+    return
   }
 
   async function updateQuantities (fromQty) {
     const swapContract = makeSwapContract(web3, swapAbi.abi, swapAbi.address)
-
     if (fromToken !== null && toToken !== null && fromQty !== null) {
-      const toQuantity = await swapContract.getNonNativeQuote(
-        fromToken.address,
-        toToken.address,
-        fromQty
-      )
+      var toQuantity
+      console.log(fromQty)
+      if (fromToken.address === FilDexConstants.nativeContractAddress) {
+        toQuantity = await swapContract.getNativeQuote(toToken.address, fromQty)
+      } else {
+        toQuantity = await swapContract.getNonNativeQuote(
+          fromToken.address,
+          toToken.address,
+          fromQty
+        )
+      }
       console.log(toQuantity)
       setQty(fromQty)
       setToQty(toQuantity)
+    } else {
+      setToQty('0')
     }
   }
 
   return (
     <div>
       <div className='flex flex-row justify-center'>
-        {isSwapSuccess ? (
+        {isSupplySuccess ? (
           <SwapSuccess
             toName={toToken.name}
             fromName={fromToken.name}
@@ -158,17 +192,18 @@ function SwapApp ({ status, connect, account, ethereum }) {
                 getAllowance(token)
               } else {
                 setToToken(token)
+                getAllowance(token)
               }
             }}
             isFromTokenDropDown={isFromTokenDropDown}
           />
         ) : (
           <div className='flex justify-start flex-col m-8 bg-slight-black text-grey-font rounded-lg p-4 w-1/3'>
-            <div className='text-sm mb-6'>You send</div>
+            <div className='text-sm mb-6'>Token 1</div>
             <div className='flex justify-start'>
               {tokens && (
                 <TokenSelectDropDown
-                  token={fromToken ?? getTokenFromIndex(0)}
+                  token={fromToken ?? getFromTokenFromIndex(0)}
                   account={account}
                   toggleDropDown={value => {
                     setIsFromTokenDropDown(true)
@@ -182,7 +217,7 @@ function SwapApp ({ status, connect, account, ethereum }) {
             <div className='mb-8' />
             <hr className='border-divider-dark border' />
             <div className='mb-4' />
-            <div className='text-sm mb-6'>You receive</div>
+            <div className='text-sm mb-6'>Token 2</div>
             <div className='flex justify-start'>
               {tokens && (
                 <TokenSelectDropDown
@@ -202,14 +237,14 @@ function SwapApp ({ status, connect, account, ethereum }) {
         )}
       </div>
       <div className='flex justify-center'>
-        {isSwapSuccess ? (
+        {isSupplySuccess ? (
           <button
             className='rounded-full bg-white px-20 py-3 text-xl'
             onClick={() => {
-              setIsSwapSuccess(false)
+              setIsSupplySuccess(false)
             }}
           >
-            Return to swap
+            Return to Supply
           </button>
         ) : isLoading ? (
           <button className='rounded-full bg-loading-fill px-20 py-3 text-xl text-black'>
@@ -220,16 +255,16 @@ function SwapApp ({ status, connect, account, ethereum }) {
             className='rounded-full bg-white px-20 py-3 text-xl'
             onClick={
               status === FilDexConstants.connected
-                ? isApprovalNeeded
+                ? isFromTokenApprovalNeeded || isToTokenApprovalNeeded
                   ? approve
-                  : swap
+                  : supply
                 : connect
             }
           >
             {status === FilDexConstants.connected
-              ? isApprovalNeeded
-                ? 'Approve'
-                : 'Swap'
+              ? isFromTokenApprovalNeeded || isToTokenApprovalNeeded
+                ? approvaButtonText()
+                : 'Supply'
               : 'Connect'}
           </button>
         )}
@@ -238,97 +273,4 @@ function SwapApp ({ status, connect, account, ethereum }) {
   )
 }
 
-export default SwapApp
-
-/*
-
-
-
-swapContract = makeSwapContract(
-              provider,
-              swapABI.abi,
-              swapABI.address
-            );
-            const data = await swapContract.methods
-              .getAllowance(dai.address)
-              .call();
-            const web3 = new Web3(provider);
-
-            const data = await swapContract.methods
-              .swapNativeToken("0x15d471748c0ec3255C1f17158729C989CAe0688E")
-              .send({
-                from: account,
-                value: "100000000000000",
-              });
-
-            const data = await swapContract.methods
-              .swapNonNativeToken(
-                "0x15d471748c0ec3255C1f17158729C989CAe0688E", // TT1
-                "0x8D9Cf8B58fcF00Ead8550459778EBd8F188951E4", // TT2
-                "10000000000000"
-              )
-              .send({
-                from: account,
-                value: "0",
-              });
-
-            const data = web3.eth.abi.encodeFunctionSignature({
-              inputs: [
-                {
-                  internalType: "address",
-                  name: "tokenOutAddress",
-                  type: "address",
-                },
-              ],
-              name: "swapNativeToken",
-              outputs: [
-                {
-                  internalType: "uint256",
-                  name: "swapAmount",
-                  type: "uint256",
-                },
-              ],
-              stateMutability: "payable",
-              type: "function",
-            });
-
-            const res = await web3.eth.sendTransaction({
-              from: account,
-              to: swapABI.address,
-              data: data,
-              value: "100000000000000",
-            });
-
-            console.log(data);
-
-            if (data <= 0) {
-            const daiContract = makeSwapContract(
-              provider,
-              dai.abi,
-              "0x15d471748c0ec3255C1f17158729C989CAe0688E"
-            );
-
-            const res = await daiContract.methods
-              .approve(swapABI.address, "10000000000000")
-              .send({
-                from: account,
-                value: 0,
-              });
-            console.log(res);
-            }
-
-            TODO(someshubham): Call getAllowance for a token from Swap Contract
-            If allowance is zero, then get the token smart contract and call the approve function
-            of the contract
-            two params: spender, amount: "Swap Contract Address", 10000000000000000000000000000
-
-            console.log(data);
-
-
-
-
-
-
-
-
-*/
+export default LiquidityApp

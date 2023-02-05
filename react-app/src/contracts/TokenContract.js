@@ -23,10 +23,10 @@ export default function makeTokenContract(
   async function approveContract(
     accountAddress,
     contractAddress,
-    allowance = "10000000000000"
+    allowance = "100000000000000000000000"
   ) {
     const res = await tokenContract.methods
-      .approve(contractAddress, allowance)
+      .approve(contractAddress, FilDexConstants.allowance)
       .send({
         from: accountAddress,
         value: 0,
@@ -37,9 +37,9 @@ export default function makeTokenContract(
   async function getAllowance(accountAddress, contractAddress) {
     var res;
     if(contractAddress === FilDexConstants.nativeContractAddress) {
-      res = "10000000000000"; 
+      res = FilDexConstants.allowance;
     } else {
-      res =  await tokenContract.methods
+      res = await tokenContract.methods
       .allowance(accountAddress, contractAddress)
       .call();
     }
@@ -48,7 +48,7 @@ export default function makeTokenContract(
 
   async function balanceOf(accountAddress) {
     var res;
-    if(accountAddress === FilDexConstants.nativeContractAddress) {
+    if(tokenAddress === FilDexConstants.nativeContractAddress) {
       res = await web3.eth.getBalance(accountAddress);
     } else {
       res = await tokenContract.methods.balanceOf(accountAddress).call();
