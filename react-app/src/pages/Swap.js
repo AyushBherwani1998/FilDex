@@ -168,6 +168,8 @@ function SwapApp ({ status, connect, account, ethereum }) {
             fromName={fromToken.name}
             fromQty={qty}
             toQty={toQty}
+            fromLogo={fromToken.logo}
+            toLogo={toToken.logo}
           />
         ) : showDropDown ? (
           <TokenDropList

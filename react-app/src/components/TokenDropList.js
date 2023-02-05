@@ -33,7 +33,7 @@ export default function TokenDropList({
                 }}
               >
                 <div className="flex flex-row">
-                  <img src={token.logo} alt="F" />
+                  <img src={token.logo} alt="F" className="w-8" />
                   <div className="m-2">{token.name}</div>
                 </div>
                 <hr />
