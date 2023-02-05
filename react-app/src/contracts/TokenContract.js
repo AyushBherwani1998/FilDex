@@ -36,7 +36,7 @@ export default function makeTokenContract(
 
   async function getAllowance(accountAddress, contractAddress) {
     var res;
-    if(accountAddress === FilDexConstants.nativeContractAddress) {
+    if(contractAddress === FilDexConstants.nativeContractAddress) {
       res = "10000000000000"; 
     } else {
       res =  await tokenContract.methods
