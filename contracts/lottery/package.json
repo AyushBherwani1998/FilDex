@@ -5,7 +5,8 @@
   "scripts": {
     "deploy": "npx hardhat run scripts/deploy.ts",
     "compile": "npx hardhat compile",
-    "update": "npx hardhat run scripts/setOperator.ts"
+    "update": "npx hardhat run scripts/setOperator.ts",
+    "open": "npx hardhat run scripts/openLottery.ts"
   },
   "license": "MIT",
   "devDependencies": {
@@ -16,6 +17,8 @@
   "dependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.1",
     "@nomiclabs/hardhat-waffle": "^2.0.3",
-    "@openzeppelin/contracts": "^4.8.1"
+    "@openzeppelin/contracts": "^4.8.1",
+    "@openzeppelin/test-helpers": "^0.5.16",
+    "dotenv": "^16.0.3"
   }
 }
