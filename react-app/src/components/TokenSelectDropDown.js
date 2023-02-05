@@ -5,6 +5,7 @@ export default function TokenSelectDropDown({
   token,
   account,
   toggleDropDown,
+  isDropDownEnabled = true
 }) {
   const [balance, setBalance] = useState("0");
 
@@ -23,7 +24,7 @@ export default function TokenSelectDropDown({
   return (
     <div
       onClick={() => {
-        toggleDropDown(true);
+        toggleDropDown(isDropDownEnabled);
       }}
       className="group flex flex-row min-w-180 min-h-12 max-h-16 rounded-lg border-0	 hover:bg-hover-fill outline-none hover:border-hover-stroke transition delay-50"
     >
@@ -44,9 +45,8 @@ export default function TokenSelectDropDown({
           <div className="text-white">Select Token</div>
         )}
       </div>
-
       <div className="flex flex-col p-4 justify-center">
-        <img src={dropDrop} alt="v" />
+        <img src={dropDrop} alt="v" style={{ display: isDropDownEnabled ? "block" : "none"}} />
       </div>
     </div>
   );
