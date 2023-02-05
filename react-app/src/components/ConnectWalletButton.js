@@ -17,7 +17,7 @@ export default function ConnectWalletButton({
     return (
       <button
         onClick={connect}
-        className="rounded-full bg-white px-8 py-2 text-md"
+        className="rounded-full bg-white px-8 py-2 text-md hover:bg-[#cccccc]"
       >
         Connect wallet
       </button>
@@ -28,11 +28,13 @@ export default function ConnectWalletButton({
   if (status === FilDexConstants.connected) {
     return (
       <div className="flex flex-row rounded-full bg-white px-8 py-2 text-md">
+        
         <img src={metamaskLogo} alt="metamask" />
         <div className="ml-2">
           {chainId} • {account.substring(0, 4)}..
           {account.substring(account.length - 4)}
         </div>
+     
       </div>
     );
   }

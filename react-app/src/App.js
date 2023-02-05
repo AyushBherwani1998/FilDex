@@ -1,6 +1,7 @@
 import { useMetaMask } from "metamask-react";
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NavigationBar from "./components/NavigationBar";
+import LotteryApp from "./pages/Lottery/Lottery";
 import SwapApp from "./pages/Swap";
 import WrapApp from "./pages/Wrap";
 import LiquidityApp from "./pages/Liquidity";
@@ -18,18 +19,39 @@ export default function App() {
           account={account}
         />
         <Routes>
-          <Route path='/' element={<SwapApp
-            status={status}
-            connect={connect}
-            account={account}
-            ethereum={ethereum}
-          />} />
-          <Route path='/wrap' element={<WrapApp
-            status={status}
-            connect={connect}
-            account={account}
-            ethereum={ethereum}
-          />} />
+          <Route
+            path="/"
+            element={
+              <SwapApp
+                status={status}
+                connect={connect}
+                account={account}
+                ethereum={ethereum}
+              />
+            }
+          />
+          <Route
+            path="/wrap"
+            element={
+              <WrapApp
+                status={status}
+                connect={connect}
+                account={account}
+                ethereum={ethereum}
+              />
+            }
+          />
+          <Route
+            path="/lottery"
+            element={
+              <LotteryApp
+                status={status}
+                connect={connect}
+                account={account}
+                ethereum={ethereum}
+              />
+            }
+          />
           <Route path='/liquidity' element={<LiquidityApp
             status={status}
             connect={connect}
@@ -38,8 +60,6 @@ export default function App() {
           />} />
         </Routes>
       </BrowserRouter>
-
-
     </div>
   );
 }
