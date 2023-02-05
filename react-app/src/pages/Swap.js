@@ -1,15 +1,15 @@
-import TokenSelectDropDown from "./components/TokenSelectDropDown";
-import TokenQuantityInput from "./components/TokenQuantityInput";
-import TokenQtyValueView from "./components/TokenQtyValueView";
+import TokenSelectDropDown from "../components/TokenSelectDropDown";
+import TokenQuantityInput from "../components/TokenQuantityInput";
+import TokenQtyValueView from "../components/TokenQtyValueView";
 
 import { useState, useEffect } from "react";
 import Web3 from "web3";
-import FilDexConstants from "./Constants";
-import makeSwapContract from "./contracts/SwapContract";
-import swapAbi from "./abi/SwapABI";
-import makeTokens from "./data/make_tokens";
-import TokenDropList from "./components/TokenDropList";
-import SwapSuccess from "./components/SwapSuccess";
+import FilDexConstants from "../Constants";
+import makeSwapContract from "../contracts/SwapContract";
+import swapAbi from "../abi/SwapABI";
+import makeTokens from "../data/make_tokens";
+import TokenDropList from "../components/TokenDropList";
+import SwapSuccess from "../components/SwapSuccess";
 
 // TODO(someshubham):
 // 1. Trim Balance Data - done
@@ -164,43 +164,43 @@ function SwapApp({ status, connect, account, ethereum }) {
             isFromTokenDropDown={isFromTokenDropDown}
           />
         ) : (
-          <div className="flex justify-start flex-col m-8 bg-slight-black text-grey-font rounded-lg p-4 w-1/3">
-            <div className="text-sm mb-6">You send</div>
-            <div className="flex justify-start">
-              {tokens && (
-                <TokenSelectDropDown
-                  token={fromToken ?? getTokenFromIndex(0)}
-                  account={account}
-                  toggleDropDown={(value) => {
-                    setIsFromTokenDropDown(true);
-                    toggleDropDown(value);
-                  }}
-                />
-              )}
-              <div className="ml-2" />
-              <TokenQuantityInput onInput={updateQuantities} />
-            </div>
-            <div className="mb-8" />
-            <hr className="border-divider-dark border" />
-            <div className="mb-4" />
-            <div className="text-sm mb-6">You receive</div>
-            <div className="flex justify-start">
-              {tokens && (
-                <TokenSelectDropDown
-                  token={toToken}
-                  account={account}
-                  toggleDropDown={(value) => {
-                    setIsFromTokenDropDown(false);
-                    toggleDropDown(value);
-                  }}
-                />
-              )}
-              <div className="ml-2" />
-              <TokenQtyValueView tokenQuantity={toQty} tokenPrice="0.00" />
-            </div>
-            <div className="mb-4" />
-          </div>
-        )}
+              <div className="flex justify-start flex-col m-8 bg-slight-black text-grey-font rounded-lg p-4 w-1/3">
+                <div className="text-sm mb-6">You send</div>
+                <div className="flex justify-start">
+                  {tokens && (
+                    <TokenSelectDropDown
+                      token={fromToken ?? getTokenFromIndex(0)}
+                      account={account}
+                      toggleDropDown={(value) => {
+                        setIsFromTokenDropDown(true);
+                        toggleDropDown(value);
+                      }}
+                    />
+                  )}
+                  <div className="ml-2" />
+                  <TokenQuantityInput onInput={updateQuantities} />
+                </div>
+                <div className="mb-8" />
+                <hr className="border-divider-dark border" />
+                <div className="mb-4" />
+                <div className="text-sm mb-6">You receive</div>
+                <div className="flex justify-start">
+                  {tokens && (
+                    <TokenSelectDropDown
+                      token={toToken}
+                      account={account}
+                      toggleDropDown={(value) => {
+                        setIsFromTokenDropDown(false);
+                        toggleDropDown(value);
+                      }}
+                    />
+                  )}
+                  <div className="ml-2" />
+                  <TokenQtyValueView tokenQuantity={toQty} tokenPrice="0.00" />
+                </div>
+                <div className="mb-4" />
+              </div>
+            )}
       </div>
       <div className="flex justify-center">
         {isSwapSuccess ? (
@@ -217,23 +217,23 @@ function SwapApp({ status, connect, account, ethereum }) {
             Submitting ...
           </button>
         ) : (
-          <button
-            className="rounded-full bg-white px-20 py-3 text-xl"
-            onClick={
-              status === FilDexConstants.connected
-                ? isApprovalNeeded
-                  ? approve
-                  : swap
-                : connect
-            }
-          >
-            {status === FilDexConstants.connected
-              ? isApprovalNeeded
-                ? "Approve"
-                : "Swap"
-              : "Connect"}
-          </button>
-        )}
+              <button
+                className="rounded-full bg-white px-20 py-3 text-xl"
+                onClick={
+                  status === FilDexConstants.connected
+                    ? isApprovalNeeded
+                      ? approve
+                      : swap
+                    : connect
+                }
+              >
+                {status === FilDexConstants.connected
+                  ? isApprovalNeeded
+                    ? "Approve"
+                    : "Swap"
+                  : "Connect"}
+              </button>
+            )}
       </div>
     </div>
   );
@@ -243,7 +243,7 @@ export default SwapApp;
 
 /*
 
-  
+
 
 swapContract = makeSwapContract(
               provider,

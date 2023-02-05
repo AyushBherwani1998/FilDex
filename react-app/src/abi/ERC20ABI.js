@@ -1,6 +1,5 @@
 //  ABI for FilDex FUSDT FUSD
-
-const abi = [
+const ERC20_ABI = [
   {
     inputs: [
       {
@@ -284,6 +283,6 @@ const abi = [
   },
 ];
 
-const erc20ABI = { abi };
+const erc20ABI = { abi: ERC20_ABI };
 
 export default erc20ABI;

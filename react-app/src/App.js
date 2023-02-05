@@ -1,24 +1,34 @@
 import { useMetaMask } from "metamask-react";
-import AppBar from "./AppBar";
-import SwapApp from "./SwapApp";
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import NavigationBar from "./components/NavigationBar";
+import SwapApp from "./pages/Swap";
+import WrapperView from "./pages/Wrap";
 
 export default function App() {
   const { status, connect, account, chainId, ethereum } = useMetaMask();
 
   return (
     <div className="flex flex-col">
-      <AppBar
-        status={status}
-        connect={connect}
-        chainId={chainId}
-        account={account}
-      />
-      <SwapApp
-        status={status}
-        connect={connect}
-        account={account}
-        ethereum={ethereum}
-      />
+      <BrowserRouter>
+        <NavigationBar
+          status={status}
+          connect={connect}
+          chainId={chainId}
+          account={account}
+        />
+        <Routes>
+          <Route path='/' element={<SwapApp
+            status={status}
+            connect={connect}
+            account={account}
+            ethereum={ethereum}
+          />} />
+          <Route path='/wrap' element={<WrapperView />} />
+
+        </Routes>
+      </BrowserRouter>
+
+
     </div>
   );
 }

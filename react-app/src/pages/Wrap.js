@@ -1,14 +1,14 @@
-import ConnectWalletButton from "../ConnectWalletButton";
-import TokenSelectDropDown from "../TokenSelectDropDown";
-import fileCoinLogo from "../../assets/filcoin_logo.svg";
-import swapLogo from "../../assets/swap.svg";
-import TokenQuantityInput from "../TokenQuantityInput";
-import TokenQtyValueView from "../TokenQtyValueView";
+import ConnectWalletButton from "../components/ConnectWalletButton";
+import TokenSelectDropDown from "../components/TokenSelectDropDown";
+import fileCoinLogo from "../assets/filcoin_logo.svg";
+import swapLogo from "../assets/swap.svg";
+import TokenQuantityInput from "../components/TokenQuantityInput";
+import TokenQtyValueView from "../components/TokenQtyValueView";
 import { useState } from "react";
 import { useMetaMask } from "metamask-react";
-import makeContract from "../../utils/makeContract";
-import { WTFIL_ABI, WTFIL_ADDRESS } from "../../utils/tokenConstants";
-import web3 from "../../web3";
+import makeContract from "../utils/makeContract";
+import { WTFIL_ABI, WTFIL_ADDRESS } from "../abi/WERC20ABI";
+import web3 from "../web3";
 
 function WrapperView() {
   const [qty, setQty] = useState("");
@@ -19,7 +19,7 @@ function WrapperView() {
   const { status, connect, account, ethereum } = useMetaMask();
 
   function swapIcons() {
-    const symbol = tokenInSymbol; 
+    const symbol = tokenInSymbol;
     setTokenInSymbol(tokenOutSymbol);
     setTokenOutSymbol(symbol);
   }
@@ -29,7 +29,7 @@ function WrapperView() {
       let intQty = parseInt(qty);
       const wtFilContract = makeContract(ethereum, WTFIL_ABI, WTFIL_ADDRESS);
 
-      if(isNaN(intQty)) {
+      if (isNaN(intQty)) {
         alert("Please enter input!")
       } else {
         const weiQty = web3.utils.toWei(qty, "ether");
@@ -73,8 +73,8 @@ function WrapperView() {
             {swapLogo != null ? (
               <img src={swapLogo} alt="F" />
             ) : (
-              <div className="p-4 border border-dashed rounded-full bg-placeholder-dark-text"></div>
-            )}
+                <div className="p-4 border border-dashed rounded-full bg-placeholder-dark-text"></div>
+              )}
           </div>
           <div className="mb-4" />
           <div className="text-sm mb-6">You receive</div>
