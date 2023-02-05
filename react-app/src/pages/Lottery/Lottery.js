@@ -7,7 +7,6 @@ import Web3 from "web3";
 import LotterySuccess from "./components/LotterySuccess";
 import makeLotteryContract from "../../contracts/LotteryContract";
 import lotteryAbi from "../../abi/LotteryABI";
-import makeTokens from "../../data/make_tokens";
 /*
 
 Call these two functions initially to check if lottery already drawed
@@ -71,11 +70,11 @@ export default function LotteryApp({ status, connect, account, ethereum }) {
             }
           });
 
-        lotteryContract.viewLottery(value).then((e) => {
-          console.log("Final Number " + e["finalNumber"]);
-          console.log("Status " + e["status"]);
-          console.log("End Time " + e["endTime"]);
-        });
+        // lotteryContract.viewLottery(value).then((e) => {
+        //   console.log("Final Number " + e["finalNumber"]);
+        //   console.log("Status " + e["status"]);
+        //   console.log("End Time " + e["endTime"]);
+        // });
       });
     }
   }, [ethereum, web3, account]);
@@ -97,7 +96,6 @@ export default function LotteryApp({ status, connect, account, ethereum }) {
 
     // Confirm number
     const numberForSubmission = reverseNumber(number) + 1000000;
-    console.log("Ticket Number " + numberForSubmission);
     const lotteryContract = makeLotteryContract(
       web3,
       lotteryAbi.abi,
@@ -105,15 +103,12 @@ export default function LotteryApp({ status, connect, account, ethereum }) {
     );
     setLoading(true);
     try {
-      const tokens = await makeTokens(web3);
-
-      const fildexToken = tokens.dai;
+      const fildexToken = lotteryContract.fDexToken;
 
       const fromTokenAllowance = await fildexToken.getAllowance(
         account,
         lotteryAbi.address
       );
-      console.log("allowance" + fromTokenAllowance);
       if (fromTokenAllowance <= 0) {
         setIsApprovalNeeded(true);
         return;
@@ -127,7 +122,6 @@ export default function LotteryApp({ status, connect, account, ethereum }) {
         numberForSubmission
       );
       setShowSuccess(true);
-      console.log("Buy Ticket Respinse");
       console.log(data);
     } catch (e) {
       setShowSuccess(false);
@@ -139,9 +133,12 @@ export default function LotteryApp({ status, connect, account, ethereum }) {
 
   async function approve() {
     setLoading(true);
-    const tokens = await makeTokens(web3);
-
-    const fildexToken = tokens.dai;
+    const lotteryContract = makeLotteryContract(
+      web3,
+      lotteryAbi.abi,
+      lotteryAbi.address
+    );
+    const fildexToken = lotteryContract.fDexToken;
     try {
       if (fildexToken === null) {
         console.log("From Token cannot be null");
@@ -167,7 +164,6 @@ export default function LotteryApp({ status, connect, account, ethereum }) {
       account,
       lotteryAbi.address
     );
-    console.log(fromTokenAllowance);
     if (fromTokenAllowance <= 0) {
       setIsApprovalNeeded(true);
       return;
