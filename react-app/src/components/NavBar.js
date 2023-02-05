@@ -1,8 +1,10 @@
 import ConnectWalletButton from "./components/ConnectWalletButton";
+import { NavDropdown, NavBar, Nav, Container } from 'react-bootstrap';
+
 import appLogo from "./assets/app_logo.svg";
 import pushLogo from "./assets/push_logo.svg";
 
-export default function AppBar({ status, connect, chainId, account }) {
+export default function NavigationBar({ status, connect, chainId, account }) {
   return (
     <div className="flex flex-row justify-between my-4 mx-4">
       <div className="flex flex-row text-white items-center">

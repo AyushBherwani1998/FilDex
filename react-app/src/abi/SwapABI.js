@@ -1,6 +1,6 @@
 const address = "0xF557EF5bcfeA70e8419055c7438760Af8633DB2B";
 
-const abi = [
+const SWAP_ABI = [
   {
     inputs: [
       {
@@ -236,5 +236,5 @@ const abi = [
 ];
 
 // TODO(someshubham): Checkout Namespace in JS
-const swapABI = { abi, address };
+const swapABI = { abi: SWAP_ABI, address };
 export default swapABI;
