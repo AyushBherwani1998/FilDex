@@ -1,5 +1,5 @@
 //abi for wtFIL token
-const wtFilAddress = "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6";
+const wtFilAddress = "0x331e12FA9055EBC5F765c6a357D4eB3B1c7008cD";
 
 const WERC20_ABI = [
   {

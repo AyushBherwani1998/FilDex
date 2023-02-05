@@ -53,6 +53,7 @@ export default function makeTokenContract(
     } else {
       res = await tokenContract.methods.balanceOf(accountAddress).call();
     }
+    console.log(`address : ${accountAddress}, ${res}`)
     return Number(
       parseFloat(web3.utils.fromWei(res, "ether")).toFixed(3)
     ).toString();

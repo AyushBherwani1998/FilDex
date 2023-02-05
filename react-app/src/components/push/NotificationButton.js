@@ -15,11 +15,17 @@ function NotificationButton() {
     // TODO: Add onClick
     return (
         <div>
-            {show && <Button variant="outline-dark" className="mr-4"><div className="mx-4 text-s text-white flex flex-row justify-evenly items-center">
-                <img src={pushLogo} alt="" />
-                <div className="ml-2">Subscribe</div>
-            </div></Button>}
-            {!show && <Button variant="outline-dark" className="mr-4"><div className="mx-4 text-s text-white flex flex-row justify-evenly items-center">
+            {show && 
+                        <div className="flex flex-row rounded-full border border-white-500 text-white px-8 py-2 text-md mr-4 hover:bg-hover-fill">
+                        <img src={pushLogo} alt="metamask" />
+                        <div className="ml-2">Subscribe</div>
+                        <div className="ml-2">
+                        
+                        </div>
+                    </div>}
+            
+           
+            {!show && <Button variant="outline-dark hover:bg-hover-fill" className="mr-4"><div className="mx-4 text-s text-white flex flex-row justify-evenly items-center ">
                 <img src={pushLogo} alt="" />
                 <div className="ml-2">Notifications</div>
             </div></Button>}
