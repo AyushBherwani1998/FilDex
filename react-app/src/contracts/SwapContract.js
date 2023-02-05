@@ -1,7 +1,7 @@
-import makeContract from "../utils/make_contract";
+import makeContract from '../utils/make_contract'
 
-export default function makeSwapContract(web3, abi, address) {
-  const swapContract = makeContract(web3, abi, address);
+export default function makeSwapContract (web3, abi, address) {
+  const swapContract = makeContract(web3, abi, address)
 
   return Object.freeze({
     contract: swapContract,
@@ -9,58 +9,118 @@ export default function makeSwapContract(web3, abi, address) {
     swapNativeToken,
     swapNonNativeToken,
     getNonNativeQuote,
-  });
+    getNativeQuote, 
+    addNonNativeTokenLiquidity, 
+    addNativeTokenLiquidity
+  })
 
-  async function getNonNativeQuote(
-    fromAddress,
+  async function getNativeQuote (
     toAddress,
-    fromQty = "10000000000000"
+    fromQty
   ) {
     const data = await swapContract.methods
-      .getQuote(fromAddress, toAddress, web3.utils.toWei(fromQty, "ether"))
-      .call();
+      .getNativeQuote(toAddress, web3.utils.toWei(fromQty, 'ether'))
+      .call()
     return Number(
-      parseFloat(web3.utils.fromWei(data, "ether")).toFixed(3)
-    ).toString();
+      parseFloat(web3.utils.fromWei(data, 'ether')).toFixed(3)
+    ).toString()
   }
 
-  async function getTokenAllowance(tokenAddress) {
-    const data = await swapContract.methods.getAllowance(tokenAddress).call();
-    return data;
+  async function getNonNativeQuote (
+    fromAddress,
+    toAddress,
+    fromQty 
+  ) {
+    console.log(fromQty);
+    console.log(web3.utils.toWei(fromQty, 'ether'))
+    const data = await swapContract.methods
+      .getQuote(fromAddress, toAddress, web3.utils.toWei(fromQty, 'ether'))
+      .call()
+    return Number(
+      parseFloat(web3.utils.fromWei(data, 'ether')).toFixed(3)
+    ).toString()
   }
 
-  async function swapNativeToken(
+  async function getTokenAllowance (tokenAddress) {
+    const data = await swapContract.methods.getAllowance(tokenAddress).call()
+    return data
+  }
+
+  async function swapNativeToken (
     accountAddress,
     toTokenAddress,
-    nativeTokenAmount = "100000000000000"
+    nativeTokenAmount
   ) {
     const data = await swapContract.methods
       .swapNativeToken(toTokenAddress)
       .send({
         from: accountAddress,
-        value: nativeTokenAmount,
-      });
+        value: web3.utils.toWei(nativeTokenAmount, 'ether')
+      })
 
-    return data;
+    return data
   }
 
-  async function swapNonNativeToken(
+  async function swapNonNativeToken (
     accountAddress,
     fromTokenAddress,
     toTokenAddress,
-    swapAmount = "10000000000000"
+    swapAmount
   ) {
     const data = await swapContract.methods
       .swapNonNativeToken(
-        fromTokenAddress, // TT1
-        toTokenAddress, // TT2
-        swapAmount
+        fromTokenAddress, 
+        toTokenAddress,
+        web3.utils.toWei(swapAmount, 'ether')
       )
       .send({
         from: accountAddress,
-        value: "0",
-      });
+        value: '0'
+      })
 
-    return data;
+    return data
+  }
+
+  async function addNativeTokenLiquidity (
+    accountAddress,
+    toTokenAddress,
+    fromTokenAmount,
+    toTokenAmount
+  ) {
+    const data = await swapContract.methods
+      .addNativeTokenLiquidity(
+        toTokenAddress,
+        web3.utils.toWei(toTokenAmount, 'ether'),
+        100
+      )
+      .send({
+        from: accountAddress,
+        value: web3.utils.toWei(fromTokenAmount, 'ether')
+      })
+
+    return data
+  }
+
+  async function addNonNativeTokenLiquidity (
+    accountAddress,
+    fromTokenAddress,
+    toTokenAddress,
+    fromTokenAmount,
+    toTokenAmount
+  ) {
+    const data = await swapContract.methods
+      .addNonNativeTokenLiquidity(
+        fromTokenAddress,
+        toTokenAddress,
+        web3.utils.toWei(fromTokenAmount, 'ether'),
+        web3.utils.toWei(toTokenAmount, 'ether'), 
+        100
+      )
+      .send({
+        from: accountAddress,
+        value: "0"
+      })
+
+    return data
   }
 }

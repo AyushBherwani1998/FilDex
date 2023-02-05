@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import NavigationBar from "./components/NavigationBar";
 import SwapApp from "./pages/Swap";
 import WrapApp from "./pages/Wrap";
+import LiquidityApp from "./pages/Liquidity";
 
 export default function App() {
   const { status, connect, account, chainId, ethereum } = useMetaMask();
@@ -24,6 +25,12 @@ export default function App() {
             ethereum={ethereum}
           />} />
           <Route path='/wrap' element={<WrapApp
+            status={status}
+            connect={connect}
+            account={account}
+            ethereum={ethereum}
+          />} />
+          <Route path='/liquidity' element={<LiquidityApp
             status={status}
             connect={connect}
             account={account}
