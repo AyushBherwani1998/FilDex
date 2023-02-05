@@ -6,7 +6,8 @@
     "deploy": "npx hardhat run scripts/deploy.ts",
     "compile": "npx hardhat compile",
     "update": "npx hardhat run scripts/setOperator.ts",
-    "open": "npx hardhat run scripts/openLottery.ts"
+    "open": "npx hardhat run scripts/openLottery.ts",
+    "close": "npx hardhat run scripts/closeLottery.ts"
   },
   "license": "MIT",
   "devDependencies": {
