@@ -2,7 +2,11 @@
   "name": "lottery_scripts",
   "version": "1.0.0",
   "description": "Scripts to tests lottery contract",
-  "scripts": {},
+  "scripts": {
+    "deploy": "npx hardhat run scripts/deploy.ts",
+    "compile": "npx hardhat compile",
+    "update": "npx hardhat run scripts/setOperator.ts"
+  },
   "license": "MIT",
   "devDependencies": {
     "hardhat": "^2.12.6",
