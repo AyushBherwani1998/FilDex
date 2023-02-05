@@ -1,8 +1,8 @@
 import { useState } from "react";
 import DigitRoll from "digit-roll-react";
 import "./lottery_roll.css";
-import LotteryBottomBar from "./LotteryBottomBar";
-import LotterMessage from "./LotteryMessage";
+import LotteryBottomBar from "./components/LotteryBottomBar";
+import LotterMessage from "./components/LotteryMessage";
 
 export default function LotteryApp() {
   const [showLotteryMessage, setShowLotteryMessage] = useState(true);

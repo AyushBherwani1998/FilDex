@@ -1,4 +1,4 @@
-import ticket from "../../assets/ticket.svg";
+import ticket from "../../../assets/ticket.svg";
 
 export default function LotteryBottomBar() {
   return (

@@ -1,5 +1,5 @@
-import ticket from "../../assets/ticket.svg";
-import arrowRight from "../../assets/arrow_right.svg";
+import ticket from "../../../assets/ticket.svg";
+import arrowRight from "../../../assets/arrow_right.svg";
 
 export default function LotterMessage() {
   return (
