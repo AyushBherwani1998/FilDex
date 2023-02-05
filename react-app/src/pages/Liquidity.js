@@ -46,8 +46,13 @@ function LiquidityApp ({ status, connect, account, ethereum }) {
     try {
       const swapContract = makeSwapContract(web3, swapAbi.abi, swapAbi.address)
 
-      if (toToken === null || fromToken === null) {
-        alert('Please select tokens')
+      if (fromToken === null) {
+        alert('Please select token 1')
+        return
+      }
+
+      if (toToken === null) {
+        alert('Please select token 2')
         return
       }
 
@@ -98,8 +103,12 @@ function LiquidityApp ({ status, connect, account, ethereum }) {
         return
       }
 
+      if(fromToken === toToken) {
+        alert('Token 1 and Token 2 cannot be same');
+      }
+
       if (qty === '0') {
-        alert('Enter some quantity')
+        alert('Enter valid quantity')
         return
       }
 
