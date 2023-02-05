@@ -7,6 +7,7 @@ import Web3 from "web3";
 import LotterySuccess from "./components/LotterySuccess";
 import makeLotteryContract from "../../contracts/LotteryContract";
 import lotteryAbi from "../../abi/LotteryABI";
+import makeTokens from "../../data/make_tokens";
 /*
 
 Call these two functions initially to check if lottery already drawed
@@ -70,11 +71,9 @@ export default function LotteryApp({ status, connect, account, ethereum }) {
             }
           });
 
-        // lotteryContract.viewLottery(value).then((e) => {
-        //   console.log("Final Number " + e["finalNumber"]);
-        //   console.log("Status " + e["status"]);
-        //   console.log("End Time " + e["endTime"]);
-        // });
+        lotteryContract.viewLottery(value).then((e) => {
+          
+        });
       });
     }
   }, [ethereum, web3, account]);
@@ -103,7 +102,9 @@ export default function LotteryApp({ status, connect, account, ethereum }) {
     );
     setLoading(true);
     try {
-      const fildexToken = lotteryContract.fDexToken;
+      const tokens = await makeTokens(web3);
+
+      const fildexToken = tokens.fDex;
 
       const fromTokenAllowance = await fildexToken.getAllowance(
         account,
@@ -133,12 +134,9 @@ export default function LotteryApp({ status, connect, account, ethereum }) {
 
   async function approve() {
     setLoading(true);
-    const lotteryContract = makeLotteryContract(
-      web3,
-      lotteryAbi.abi,
-      lotteryAbi.address
-    );
-    const fildexToken = lotteryContract.fDexToken;
+    const tokens = await makeTokens(web3);
+
+    const fildexToken = tokens.fDex;
     try {
       if (fildexToken === null) {
         console.log("From Token cannot be null");
@@ -184,9 +182,7 @@ export default function LotteryApp({ status, connect, account, ethereum }) {
       {showSuccess ? (
         <LotterySuccess number={number} />
       ) : showLotteryMessage ? (
-        <LotterMessage
-          ticketNumber={reverseNumber(parseInt(ticketNumber) - 1000000)}
-        />
+        <LotterMessage ticketNumber={ticketNumber} />
       ) : (
         <div className="flex flex-col items-center m-8 bg-slight-black text-grey-font rounded-lg p-4 w-1/3">
           <div className="text-grey-font mb-4">Your lotter number</div>
