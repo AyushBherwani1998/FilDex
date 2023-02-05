@@ -1,5 +1,5 @@
 import { useMetaMask } from "metamask-react";
-import AppBar from "./AppBar";
+import NavigationBar from "./components/NavigationBar";
 import SwapApp from "./SwapApp";
 
 export default function App() {
@@ -7,7 +7,7 @@ export default function App() {
 
   return (
     <div className="flex flex-col">
-      <AppBar
+      <NavigationBar
         status={status}
         connect={connect}
         chainId={chainId}
