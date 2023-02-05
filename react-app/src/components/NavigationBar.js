@@ -4,7 +4,6 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 
 import appLogo from "../assets/app_logo.svg";
-import pushLogo from "../assets/push_logo.svg";
 import NotificationButton from "./push/NotificationButton";
 
 export default function NavigationBar({ status, connect, chainId, account }) {
