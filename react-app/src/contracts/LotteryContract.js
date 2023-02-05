@@ -1,9 +1,16 @@
 import makeContract from "../utils/make_contract";
+import makeTokenContract from "./TokenContract";
+import erc20ABI from "../abi/ERC20ABI";
+
+const fDexTokenAddress = "0x4cC33BD5d61791aC58a43A4f645256E7cc75ED1c";
 
 export default function makeLotteryContract(web3, abi, address) {
   const lotteryContract = makeContract(web3, abi, address);
 
+  const fDexToken = makeTokenContract(web3, erc20ABI.abi, fDexTokenAddress);
+
   return Object.freeze({
+    fDexToken,
     contract: lotteryContract,
     address,
     viewCurrentLotteryId,
