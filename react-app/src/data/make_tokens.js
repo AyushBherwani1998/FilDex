@@ -10,15 +10,10 @@ import FilDexConstants from "../Constants";
 
 const fUsdAddress = "0x9FB47Fa35ec3BFcE7DbcE3f490D1a389c3891a90";
 const fDexAddress = "0x4cC33BD5d61791aC58a43A4f645256E7cc75ED1c";
-
-const daiAddress = "0x75Ab5AB1Eef154C0352Fc31D2428Cef80C7F8B33";
+const fDaiAddress = "0x4E4b516BCFC8EDc5028416Bd588371115b82b65e";
 
 export default function makeTokens(web3) {
   return Object.freeze({
-    dai: makeTokenContract(web3, erc20ABI.abi, daiAddress, {
-      name: "DAI",
-      logo: fileCoinLogo,
-    }),
     fUsd: makeTokenContract(web3, erc20ABI.abi, fUsdAddress, {
       name: "FUSD",
       logo: fusdLogo,
