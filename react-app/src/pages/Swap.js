@@ -181,7 +181,7 @@ function SwapApp({ status, connect, account, ethereum }) {
                   <TokenQuantityInput onInput={updateQuantities} />
                 </div>
                 <div className="mb-8" />
-                <hr className="border-divider-dark border" />
+                <hr className="border-hover-stroke border-2" />
                 <div className="mb-4" />
                 <div className="text-sm mb-6">You receive</div>
                 <div className="flex justify-start">
