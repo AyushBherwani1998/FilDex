@@ -13,13 +13,13 @@ const main = async () => {
 
 
         let drawLotteryTransaction = await filDexLottery.drawFinalNumberAndMakeLotteryClaimable(lotteryId, true);
-        let drawReceiptTransactionReceipt = await closeLotteryTransaction.wait(1);
-        if (receipt.status === 1) {
+        let drawReceiptTransactionReceipt = await drawLotteryTransaction.wait(1);
+        if (drawReceiptTransactionReceipt.status === 1) {
             console.log("Lottery is claimable now: ");
-            console.log(drawLotteryTransaction.hash);
+            console.log(drawReceiptTransactionReceipt.hash);
         } else {
             console.log("Failed to draw lottery: ");
-            console.log(drawLotteryTransaction.hash);
+            console.log(drawReceiptTransactionReceipt.hash);
         }
     } else {
         console.log("Failed to close lottery: ");
