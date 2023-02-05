@@ -18,9 +18,9 @@ export default function NavigationBar({ status, connect, chainId, account }) {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link href="/"> <div className="mx-4 text-s text-white">Swap</div></Nav.Link>
-            <Nav.Link href="#liquidity"> <div className="mx-4 text-s text-white">Supply FIL-FDX</div></Nav.Link>
-            <Nav.Link href="#liquidity"> <div className="mx-4 text-s text-white">Wrap/UnWrap</div></Nav.Link>
-            <Nav.Link href="#liquidity"> <div className="mx-4 text-s text-white">Supply FIL-FDX</div></Nav.Link>
+            <Nav.Link href="/liquidity"> <div className="mx-4 text-s text-white">Supply FIL-FDX</div></Nav.Link>
+            <Nav.Link href="/wrap"> <div className="mx-4 text-s text-white">Wrap/UnWrap</div></Nav.Link>
+            <Nav.Link href="/lottery"> <div className="mx-4 text-s text-white">Lottery</div></Nav.Link>
           </Nav>
         </Navbar.Collapse>
         <NotificationButton />
