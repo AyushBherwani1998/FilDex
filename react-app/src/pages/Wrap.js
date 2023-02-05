@@ -1,6 +1,7 @@
 import TokenSelectDropDown from '../components/TokenSelectDropDown'
 import TokenQuantityInput from '../components/TokenQuantityInput'
 import TokenQtyValueView from '../components/TokenQtyValueView'
+import sendNotification from '../push/send_notification';
 
 import { useState, useEffect } from 'react'
 import Web3 from 'web3'
@@ -9,7 +10,7 @@ import makeTokens from '../data/make_tokens'
 import SwapSuccess from '../components/SwapSuccess'
 import swapLogo from '../assets/swap.svg'
 
-function WrapApp ({ status, connect, account, ethereum }) {
+function WrapApp({ status, connect, account, ethereum }) {
   const [qty, setQty] = useState('0')
   const [toQty, setToQty] = useState('0')
 
@@ -33,7 +34,7 @@ function WrapApp ({ status, connect, account, ethereum }) {
     }
   }, [ethereum, web3])
 
-  async function swap () {
+  async function swap() {
     setLoading(true)
     try {
       if (toToken === null || fromToken === null) {
@@ -45,19 +46,29 @@ function WrapApp ({ status, connect, account, ethereum }) {
         console.log('Enter some quantity')
         return
       }
-      const wrapperToken = getWrappedNativeToken(); 
+      const wrapperToken = getWrappedNativeToken();
       const weiQty = web3.utils.toWei(qty, 'ether');
-        var tx;
-        if (fromToken.address === FilDexConstants.nativeContractAddress) {
-          tx = await wrapperToken.contract.methods.deposit().send({
-            value: weiQty,
-            from: account
-          })
-        } else {
-          tx = await wrapperToken.contract.methods.withdraw(weiQty).send({
-            from: account
-          })
-        }
+      var tx;
+      if (fromToken.address === FilDexConstants.nativeContractAddress) {
+        tx = await wrapperToken.contract.methods.deposit().send({
+          value: weiQty,
+          from: account
+        }).on('receipt', function (receipt) {
+          let title = receipt.status ? "Transaction is successful" : "Transaction failed";
+          let body = receipt.from + ' to ' + receipt.to;
+          let cta = `https://goerli.etherscan.io/tx/${receipt.transactionHash}`;
+          sendNotification(title, body, receipt.from, cta);
+        });
+      } else {
+        tx = await wrapperToken.contract.methods.withdraw(weiQty).send({
+          from: account
+        }).on('receipt', function (receipt) {
+          let title = receipt.status ? "Transaction is successful" : "Transaction failed";
+          let body = receipt.from + ' to ' + receipt.to;
+          let cta = `https://goerli.etherscan.io/tx/${receipt.transactionHash}`;
+          sendNotification(title, body, receipt.from, cta);
+        });
+      }
       setIsSwapSuccess(true)
       console.log(tx)
     } catch (e) {
@@ -70,20 +81,20 @@ function WrapApp ({ status, connect, account, ethereum }) {
 
   function getWrappedNativeToken(setToken) {
     const keys = Object.keys(tokens)
-    const token = tokens[keys[keys.length-2]]
-    if(setToken) {
+    const token = tokens[keys[keys.length - 2]]
+    if (setToken) {
       setFromToken(token)
     }
-    return token; 
+    return token;
   }
 
   function getNativeToken(setToken) {
     const keys = Object.keys(tokens)
-    const token = tokens[keys[keys.length-1]]
-    if(setToken) {
+    const token = tokens[keys[keys.length - 1]]
+    if (setToken) {
       setToToken(token)
     }
-    return token; 
+    return token;
   }
 
   function onSwapLogoClick() {
@@ -108,37 +119,37 @@ function WrapApp ({ status, connect, account, ethereum }) {
             toQty={toQty}
           />
         ) : (
-          <div className='flex justify-start flex-col m-8 bg-slight-black text-grey-font rounded-lg p-4 w-1/3'>
-            <div className='text-sm mb-6'>You send</div>
-            <div className='flex justify-start'>
-              {tokens && (
-                <TokenSelectDropDown
-                  token={fromToken ?? getWrappedNativeToken(true)}
-                  account={account}
-                  isDropDownEnabled = {false}
-                />
-              )}
-              <div className='ml-2' />
-              <TokenQuantityInput onInput={updateQuantities} />
+            <div className='flex justify-start flex-col m-8 bg-slight-black text-grey-font rounded-lg p-4 w-1/3'>
+              <div className='text-sm mb-6'>You send</div>
+              <div className='flex justify-start'>
+                {tokens && (
+                  <TokenSelectDropDown
+                    token={fromToken ?? getWrappedNativeToken(true)}
+                    account={account}
+                    isDropDownEnabled={false}
+                  />
+                )}
+                <div className='ml-2' />
+                <TokenQuantityInput onInput={updateQuantities} />
+              </div>
+              <div className='mb-8' />
+              <div className='flex justify-center '> <img src={swapLogo} alt="v" onClick={onSwapLogoClick} /> </div>
+              <div className='mb-4' />
+              <div className='text-sm mb-6'>You receive</div>
+              <div className='flex justify-start'>
+                {tokens && (
+                  <TokenSelectDropDown
+                    token={toToken ?? getNativeToken(true)}
+                    account={account}
+                    isDropDownEnabled={false}
+                  />
+                )}
+                <div className='ml-2' />
+                <TokenQtyValueView tokenQuantity={toQty} tokenPrice='0.00' />
+              </div>
+              <div className='mb-4' />
             </div>
-            <div className='mb-8' />
-            <div className='flex justify-center '> <img src={swapLogo} alt="v" onClick={onSwapLogoClick}/> </div>
-            <div className='mb-4' />
-            <div className='text-sm mb-6'>You receive</div>
-            <div className='flex justify-start'>
-              {tokens && (
-                <TokenSelectDropDown
-                  token={toToken ?? getNativeToken(true)}
-                  account={account}
-                  isDropDownEnabled = {false}
-                />
-              )}
-              <div className='ml-2' />
-              <TokenQtyValueView tokenQuantity={toQty} tokenPrice='0.00' />
-            </div>
-            <div className='mb-4' />
-          </div>
-        )}
+          )}
       </div>
       <div className='flex justify-center'>
         {isSwapSuccess ? (
@@ -155,15 +166,15 @@ function WrapApp ({ status, connect, account, ethereum }) {
             Submitting ...
           </button>
         ) : (
-          <button
-            className='rounded-full bg-white px-20 py-3 text-xl'
-            onClick={
-              status === FilDexConstants.connected ? swap : connect
-            }
-          >
-            {status === FilDexConstants.connected ? 'Swap' : 'Connect'}
-          </button>
-        )}
+              <button
+                className='rounded-full bg-white px-20 py-3 text-xl'
+                onClick={
+                  status === FilDexConstants.connected ? swap : connect
+                }
+              >
+                {status === FilDexConstants.connected ? 'Swap' : 'Connect'}
+              </button>
+            )}
       </div>
     </div>
   )

@@ -1,6 +1,7 @@
 import makeContract from '../utils/make_contract'
+import sendNotification from '../push/send_notification';
 
-export default function makeSwapContract (web3, abi, address) {
+export default function makeSwapContract(web3, abi, address) {
   const swapContract = makeContract(web3, abi, address)
 
   return Object.freeze({
@@ -9,12 +10,12 @@ export default function makeSwapContract (web3, abi, address) {
     swapNativeToken,
     swapNonNativeToken,
     getNonNativeQuote,
-    getNativeQuote, 
-    addNonNativeTokenLiquidity, 
+    getNativeQuote,
+    addNonNativeTokenLiquidity,
     addNativeTokenLiquidity
   })
 
-  async function getNativeQuote (
+  async function getNativeQuote(
     toAddress,
     fromQty
   ) {
@@ -26,10 +27,10 @@ export default function makeSwapContract (web3, abi, address) {
     ).toString()
   }
 
-  async function getNonNativeQuote (
+  async function getNonNativeQuote(
     fromAddress,
     toAddress,
-    fromQty 
+    fromQty
   ) {
     console.log(fromQty);
     console.log(web3.utils.toWei(fromQty, 'ether'))
@@ -41,12 +42,12 @@ export default function makeSwapContract (web3, abi, address) {
     ).toString()
   }
 
-  async function getTokenAllowance (tokenAddress) {
+  async function getTokenAllowance(tokenAddress) {
     const data = await swapContract.methods.getAllowance(tokenAddress).call()
     return data
   }
 
-  async function swapNativeToken (
+  async function swapNativeToken(
     accountAddress,
     toTokenAddress,
     nativeTokenAmount
@@ -56,12 +57,17 @@ export default function makeSwapContract (web3, abi, address) {
       .send({
         from: accountAddress,
         value: web3.utils.toWei(nativeTokenAmount, 'ether')
-      })
+      }).on('receipt', function (receipt) {
+        let title = receipt.status ? "Transaction is successful" : "Transaction failed";
+        let body = receipt.from + ' to ' + receipt.to;
+        let cta = `https://goerli.etherscan.io/tx/${receipt.transactionHash}`;
+        sendNotification(title, body, receipt.from, cta);
+      });
 
     return data
   }
 
-  async function swapNonNativeToken (
+  async function swapNonNativeToken(
     accountAddress,
     fromTokenAddress,
     toTokenAddress,
@@ -69,19 +75,24 @@ export default function makeSwapContract (web3, abi, address) {
   ) {
     const data = await swapContract.methods
       .swapNonNativeToken(
-        fromTokenAddress, 
+        fromTokenAddress,
         toTokenAddress,
         web3.utils.toWei(swapAmount, 'ether')
       )
       .send({
         from: accountAddress,
         value: '0'
-      })
+      }).on('receipt', function (receipt) {
+        let title = receipt.status ? "Transaction is successful" : "Transaction failed";
+        let body = receipt.from + ' to ' + receipt.to;
+        let cta = `https://goerli.etherscan.io/tx/${receipt.transactionHash}`;
+        sendNotification(title, body, receipt.from, cta);
+      });
 
     return data
   }
 
-  async function addNativeTokenLiquidity (
+  async function addNativeTokenLiquidity(
     accountAddress,
     toTokenAddress,
     fromTokenAmount,
@@ -96,12 +107,17 @@ export default function makeSwapContract (web3, abi, address) {
       .send({
         from: accountAddress,
         value: web3.utils.toWei(fromTokenAmount, 'ether')
-      })
+      }).on('receipt', function (receipt) {
+        let title = receipt.status ? "Transaction is successful" : "Transaction failed";
+        let body = receipt.from + ' to ' + receipt.to;
+        let cta = `https://goerli.etherscan.io/tx/${receipt.transactionHash}`;
+        sendNotification(title, body, receipt.from, cta);
+      });
 
     return data
   }
 
-  async function addNonNativeTokenLiquidity (
+  async function addNonNativeTokenLiquidity(
     accountAddress,
     fromTokenAddress,
     toTokenAddress,
@@ -113,13 +129,18 @@ export default function makeSwapContract (web3, abi, address) {
         fromTokenAddress,
         toTokenAddress,
         web3.utils.toWei(fromTokenAmount, 'ether'),
-        web3.utils.toWei(toTokenAmount, 'ether'), 
+        web3.utils.toWei(toTokenAmount, 'ether'),
         100
       )
       .send({
         from: accountAddress,
         value: "0"
-      })
+      }).on('receipt', function (receipt) {
+        let title = receipt.status ? "Transaction is successful" : "Transaction failed";
+        let body = receipt.from + ' to ' + receipt.to;
+        let cta = `https://goerli.etherscan.io/tx/${receipt.transactionHash}`;
+        sendNotification(title, body, receipt.from, cta);
+      });
 
     return data
   }
