@@ -4,8 +4,11 @@ import "./lottery_roll.css";
 import LotteryBottomBar from "./components/LotteryBottomBar";
 import LotterMessage from "./components/LotteryMessage";
 
+import LotterySuccess from "./components/LotterySuccess";
+
 export default function LotteryApp() {
   const [showLotteryMessage, setShowLotteryMessage] = useState(true);
+  const [showSuccess, setShowSuccess] = useState(true);
   const [number, setNumber] = useState(Math.floor(Math.random() * 1000000));
 
   const refresh = () => {
@@ -13,14 +16,24 @@ export default function LotteryApp() {
   };
 
   const onClick = (e) => {
+    if (showSuccess) {
+      setShowSuccess(false);
+      return;
+    }
+
     if (showLotteryMessage) {
       setShowLotteryMessage(false);
+      return;
     }
+
+    // Draw Lottery Number
   };
 
   return (
     <div className="flex flex-col items-center">
-      {showLotteryMessage ? (
+      {showSuccess ? (
+        <LotterySuccess number={number} />
+      ) : showLotteryMessage ? (
         <LotterMessage />
       ) : (
         <div className="flex flex-col items-center m-8 bg-slight-black text-grey-font rounded-lg p-4 w-1/3">
@@ -42,7 +55,11 @@ export default function LotteryApp() {
         className="rounded-full bg-white px-12 py-2 text-xl"
         onClick={onClick}
       >
-        {showLotteryMessage ? "Draw Lottery" : "Confirm Number"}
+        {showSuccess
+          ? "Return to lottery"
+          : showLotteryMessage
+          ? "Draw Lottery"
+          : "Confirm Number"}
       </button>
     </div>
   );
