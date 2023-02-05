@@ -6,6 +6,29 @@ import LotterMessage from "./components/LotteryMessage";
 
 import LotterySuccess from "./components/LotterySuccess";
 
+
+/*
+
+Call these two functions initially to check if lottery already drawed
+viewCurrentLotteryId
+viewUserInfoForLotterId -> to check whether already drawed a lottery
+
+
+lottery number = number + 10^7
+lottery data will be fetched from view funcs
+
+
+Step1: calculate lottery number
+Step2: click on lottery then getAllowance then approve the contract with the Fildex token
+Step3: Buy ticket
+
+
+
+
+*/
+
+
+
 export default function LotteryApp() {
   const [showLotteryMessage, setShowLotteryMessage] = useState(true);
   const [showSuccess, setShowSuccess] = useState(true);
