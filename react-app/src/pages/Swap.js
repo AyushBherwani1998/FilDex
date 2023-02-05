@@ -189,7 +189,7 @@ function SwapApp ({ status, connect, account, ethereum }) {
                 <div className="flex justify-start">
                   {tokens && (
                     <TokenSelectDropDown
-                      token={fromToken ?? getTokenFromIndex(0)}
+                      token={fromToken ?? getFromTokenFromIndex(0)}
                       account={account}
                       toggleDropDown={(value) => {
                         setIsFromTokenDropDown(true);
