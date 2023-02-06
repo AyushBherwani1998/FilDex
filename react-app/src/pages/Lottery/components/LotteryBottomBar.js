@@ -11,7 +11,7 @@ export default function LotteryBottomBar() {
         <div className="mr-1 mt-1">
           <img src={ticket} alt="Ticket" />
         </div>
-        <div className="text-white">2</div>
+        <div className="text-white">1</div>
       </div>
     </div>
   );
