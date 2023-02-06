@@ -13,7 +13,7 @@ export default function NavigationBar({ status, connect, chainId, account }) {
       <Container fluid>
         <Navbar.Brand href="/" className="flex relative">
           <img src={appLogo} alt="FilDex" className="w-40 hover: group" />
-        
+
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav" className="mx-auto">
@@ -24,9 +24,13 @@ export default function NavigationBar({ status, connect, chainId, account }) {
             <Nav.Link href="/lottery" className="hover:bg-hover-fill mx-3 rounded active:bg-blue-600"> <div className="mx-4 text-s text-white"> 💸 Lottery</div></Nav.Link>
           </Nav>
         </Navbar.Collapse>
-        
-        <NotificationButton />
-        <ConnectWalletButton 
+
+        <NotificationButton
+          userAddress={account}
+          connect={connect}
+          chainId={chainId}
+        />
+        <ConnectWalletButton
           status={status}
           connect={connect}
           account={account}
