@@ -14,56 +14,50 @@
 
 
 
-
-<img src="https://i.imgur.com/V6X1J6d.png" title="source: imgur.com" /></a>
+<h3 align="center">https://fil-dex.vercel.app/</h3>
+<img src="https://i.imgur.com/h9MhEuN.png" title="source: imgur.com" /></a>
 
 ## Overview
 
 
+A DeFi application with AMM decentralised exchange and lottery built for FEVM.
 
+<img src="https://i.imgur.com/4bFuENl.png" title="source: imgur.com" /></a>
+<img src="https://i.imgur.com/c2yq7ET.png" title="source: imgur.com" /></a>
 
-Fildex is an AMM decentralized exchange built for the FVM chain currently deployed on the hyperspace test net.(https://fil-dex.vercel.app/)
 
 
 ## Problem statement
 
 
-At present, the Filecoin network already possesses a noticeable user base that holds FIL tokens as a valuable asset with no other asset available to switch to.
+At present, the Filecoin network already possesses a noticeable user base that holds FIL tokens as a valuable asset with minimal usability.
 
 
 ## Use cases
 
+• To onboard other DeFi users on the FEVM for mass adoption. 
 
-With Fildex our aim is to make sure
+• Users on FEVM are able to exchange FIL for other tokens issued on-chain, and there is enough on-chain liquidity on the FEVM.
 
-
-
-1. Users on FVM are able to exchange FIL for other tokens issued on-chain and there is enough on-chain liquidity on the FVM
-2.  To onboard other Defi users on the FVM chain.
-3. To enable liquidity of governance tokens for Dao’s (like data Dao’s) and storage provider incentives.
+• To enable liquidity of governance tokens for Dao’s (like data Dao’s) and storage provider incentives.
 
 
 ## Key features
 
 
+Core features include swapping, unwrapping and wrapping, supplying liquidity, and to incentivise – gamification features like lotteries
 
+• Swap: Exchange any non-native and native tokens.
 
-Core features include swapping, unwrapping and wrapping, supplying liquidity, to incentivize – gamification features like lotteries
+• Liquidity pools: Create or supply liquidity for token pairs of your choice and earn trading fees on it.
 
-Swap: Swap between any tokens native and non-native tokens. 
+• Lottery: Gamification features to incentivise users and burn mechanism for FDEX token (Fildex utility token). You can win a lottery ticket as an incentive for swapping or buy lottery tickets using our FDEX token. You can choose a randomly generated 6-digit lottery number or re-roll the number to your choice. The lottery pool is distributed among the participants basis on the final number drawn and brackets matched. You will be informed via push notifications of your lottery results and can claim the prizes.
 
-Liquidity pools: Create or supply liquidity for token pairs of your choice and earn trading fees on it.
+• Push Protocol: Notifications to provide better UX for use cases such as Swap successful/failed, Add liquidity and Lottery events.
 
-Lottery: 
+## How it's Made
 
-* You can win a lottery ticket as an incentive for swapping or buy lottery tickets using fDex tokens.
-* You can choose a randomly generated 6-digit lottery number or reroll the number to your choice.
-* The lottery pool is distributed among the participants basis on the number matching
-* You will be informed via push notifications of your lottery results and can claim the prizes.
-
-Fildex token: A utility token with deflationary emission and burn mechanisms achieved by integrating it into the core of dex’s features like adding/supplying liquidity, lotteries, and more.
-
-Push notifications: Integrating push notifications to provide better UX for use cases such as swaps Successful/failed and Lottery events.
+We used Openzepplin and Hardhat for smart contract development and FEVM deployment. React is being used to build an amazing DApp and smart contracts are plugged into DApp using web3.js Integrated Push protocol to alert users for transactions of Swap, Add liquidity, and Lottery events.
 
 
 ## Contract Addresses
