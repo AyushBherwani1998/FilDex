@@ -46,6 +46,8 @@ export default function LotteryApp({ status, connect, account, ethereum, chainId
   const [isUserAlreadyDrawed, setIsUserAlreadyDrawed] = useState(false);
   const [ticketNumber, setTicketNumber] = useState("0");
 
+  const [lotteryStatus, setLotteryStatus] = useState("1");
+
   useEffect(() => {
     if (ethereum !== null && web3 === null) {
       setWeb3(new Web3(ethereum));
@@ -74,7 +76,10 @@ export default function LotteryApp({ status, connect, account, ethereum, chainId
           });
 
         lotteryContract.viewLottery(value).then((e) => {
-          
+          console.log("Final Number " + e["finalNumber"]);
+          console.log("Status " + e["status"]);
+          console.log("End Time " + e["endTime"]);
+          setLotteryStatus(e["status"]);
         });
       });
     }
@@ -85,8 +90,20 @@ export default function LotteryApp({ status, connect, account, ethereum, chainId
   };
 
   const onClick = async (e) => {
+    const lotteryContract = makeLotteryContract(
+      web3,
+      lotteryAbi.abi,
+      lotteryAbi.address
+    );
     if (showSuccess) {
       setShowSuccess(false);
+      setShowLotteryMessage(true);
+      lotteryContract.viewLottery(lotteryId).then((e) => {
+        console.log("Final Number " + e["finalNumber"]);
+        console.log("Status " + e["status"]);
+        console.log("End Time " + e["endTime"]);
+        setLotteryStatus(e["status"]);
+      });
       return;
     }
 
@@ -97,11 +114,7 @@ export default function LotteryApp({ status, connect, account, ethereum, chainId
 
     // Confirm number
     const numberForSubmission = reverseNumber(number) + 1000000;
-    const lotteryContract = makeLotteryContract(
-      web3,
-      lotteryAbi.abi,
-      lotteryAbi.address
-    );
+
     setLoading(true);
     try {
       const tokens = await makeTokens(web3);
@@ -191,7 +204,10 @@ export default function LotteryApp({ status, connect, account, ethereum, chainId
       {showSuccess ? (
         <LotterySuccess number={number} />
       ) : showLotteryMessage ? (
-        <LotterMessage ticketNumber={ticketNumber} />
+        <LotterMessage
+          ticketNumber={ticketNumber}
+          lotteryStatus={lotteryStatus}
+        />
       ) : (
         <div className="flex flex-col items-center m-8 bg-slight-black text-grey-font rounded-lg p-4 w-1/3">
           <div className="text-grey-font mb-4">Your lotter number</div>
@@ -222,7 +238,7 @@ export default function LotteryApp({ status, connect, account, ethereum, chainId
         <button className="rounded-full bg-loading-fill px-20 py-3 text-xl text-black">
           Submitting ...
         </button>
-      ) : isUserAlreadyDrawed ? (
+      ) : isUserAlreadyDrawed || lotteryStatus !== "1" ? (
         <div />
       ) : (
         <button
