@@ -1,5 +1,4 @@
 import successLogo from "../assets/success_logo.svg";
-import fileLogo from "../assets/filcoin_logo.svg";
 
 export default function SwapSuccess({ fromName, toName, fromQty, toQty, fromLogo, toLogo }) {
   return (
