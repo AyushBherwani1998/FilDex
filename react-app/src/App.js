@@ -5,6 +5,7 @@ import LotteryApp from "./pages/Lottery/Lottery";
 import SwapApp from "./pages/Swap";
 import WrapApp from "./pages/Wrap";
 import LiquidityApp from "./pages/Liquidity";
+import NotificationsPage from "./pages/notifications";
 
 export default function App() {
   const { status, connect, account, chainId, ethereum } = useMetaMask();
@@ -58,6 +59,7 @@ export default function App() {
             account={account}
             ethereum={ethereum}
           />} />
+          <Route path='/notifications' element={<NotificationsPage />} />
         </Routes>
       </BrowserRouter>
     </div>

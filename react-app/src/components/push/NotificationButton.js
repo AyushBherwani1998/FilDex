@@ -5,9 +5,11 @@ import pushLogo from "../../assets/push_logo.svg";
 import requestForChannelOptIn from "../../push/opt_int_channel";
 import FilDexConstants from "../../Constants";
 import changeNetwork from "../../utils/change_network";
+import { useNavigate } from "react-router-dom";
 
 function NotificationButton({ userAddress, status, chainId }) {
     const [show, setShow] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         console.log(userAddress);
@@ -29,6 +31,10 @@ function NotificationButton({ userAddress, status, chainId }) {
         }
     }
 
+    async function navigateToNotifications() {
+        navigate("/notifications");
+    }
+
     // TODO: Add onClick
     return (
         <div>
@@ -42,7 +48,7 @@ function NotificationButton({ userAddress, status, chainId }) {
                 </div>}
 
 
-            {!show && <div onClick={() => channelOptin()} className="flex flex-row rounded-full border border-white-500 text-white px-8 py-2 text-md mr-4 hover:bg-hover-fill">
+            {!show && <div onClick={() => navigateToNotifications()} className="flex flex-row rounded-full border border-white-500 text-white px-8 py-2 text-md mr-4 hover:bg-hover-fill">
                 <img src={pushLogo} alt="push" />
                 <div className="ml-2">Notifications</div>
                 <div className="ml-2">
