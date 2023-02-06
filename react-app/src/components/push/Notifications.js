@@ -1,6 +1,8 @@
 import { NotificationItem } from '@pushprotocol/uiweb'
 import { useState, useEffect } from 'react'
 import getUserNotifications from '../../push/get_notifications'
+import Spinner from 'react-bootstrap/Spinner';
+
 
 function Notifications ({ userAddress }) {
   const [notifications, setNotifications] = useState([])
@@ -25,9 +27,13 @@ function Notifications ({ userAddress }) {
   // TODO: Add loader
   return (
     <div>
-      {notifications && (
+      { isLoading ? (
+         <Spinner animation="border" role="status" variant="light">
+         <span className="visually-hidden">Loading...</span>
+       </Spinner>
+      ) : (notifications && (
         <div>
-          {notifications.length !== 0 ? (
+          {notifications.length === 0 ? (
             <div>
             <h3 className="text-white text-md flex justify-center m-6">NO NOTIFICATIONS</h3>
             <div className='w-100 justify-center'>
@@ -58,7 +64,7 @@ function Notifications ({ userAddress }) {
             })
           )}
         </div>
-      )}
+      ))}
     </div>
   )
 }
