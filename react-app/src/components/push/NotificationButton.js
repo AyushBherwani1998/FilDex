@@ -4,7 +4,7 @@ import isUserSubscribed from "../../push/get_channels";
 import pushLogo from "../../assets/push_logo.svg";
 import requestForChannelOptIn from "../../push/opt_int_channel";
 import FilDexConstants from "../../Constants";
-import web3 from '../../web3';
+import changeNetwork from "../../utils/change_network";
 
 function NotificationButton({ userAddress, status, chainId }) {
     const [show, setShow] = useState(true);
@@ -21,10 +21,7 @@ function NotificationButton({ userAddress, status, chainId }) {
             alert("Please connect your wallet");
         } else {
             if (chainId !== 5) {
-                await window.ethereum.request({
-                    method: 'wallet_switchEthereumChain',
-                    params: [{ chainId: web3.utils.toHex(5) }]
-                });
+                await changeNetwork(5);
                 requestForChannelOptIn(userAddress);
             } else {
                 requestForChannelOptIn(userAddress);
