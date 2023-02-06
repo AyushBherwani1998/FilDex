@@ -8,6 +8,8 @@ import LotterySuccess from "./components/LotterySuccess";
 import makeLotteryContract from "../../contracts/LotteryContract";
 import lotteryAbi from "../../abi/LotteryABI";
 import makeTokens from "../../data/make_tokens";
+import changeNetwork from '../../utils/change_network'
+import FilDexConstants from '../../Constants'
 /*
 
 Call these two functions initially to check if lottery already drawed
@@ -32,7 +34,7 @@ enum Status {
 
 */
 
-export default function LotteryApp({ status, connect, account, ethereum }) {
+export default function LotteryApp({ status, connect, account, ethereum, chainId }) {
   const [web3, setWeb3] = useState(null);
   const [lotteryId, setLotteryId] = useState("");
   const [showLotteryMessage, setShowLotteryMessage] = useState(true);
@@ -132,7 +134,14 @@ export default function LotteryApp({ status, connect, account, ethereum }) {
     }
   };
 
+  async function checkNetworkState() {
+    if(chainId !== FilDexConstants.hyperspaceChainId) {
+      await changeNetwork(FilDexConstants.hyperspaceChainId)
+    }
+  }
+
   async function approve() {
+    await checkNetworkState()
     setLoading(true);
     const tokens = await makeTokens(web3);
 
