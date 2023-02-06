@@ -22,7 +22,7 @@
 
 
 
-Fildex is an AMM decentralized exchange built for the FVM chain currently deployed on the hyperspace test net. 
+Fildex is an AMM decentralized exchange built for the FVM chain currently deployed on the hyperspace test net.(https://fil-dex.vercel.app/)
 
 
 ## Problem statement
