@@ -9,8 +9,9 @@ import FilDexConstants from '../Constants'
 import makeTokens from '../data/make_tokens'
 import SwapSuccess from '../components/SwapSuccess'
 import swapLogo from '../assets/swap.svg'
+import changeNetwork from '../utils/change_network'
 
-function WrapApp({ status, connect, account, ethereum }) {
+function WrapApp({ status, connect, account, ethereum, chainId }) {
   const [qty, setQty] = useState('0')
   const [toQty, setToQty] = useState('0')
 
@@ -34,7 +35,14 @@ function WrapApp({ status, connect, account, ethereum }) {
     }
   }, [ethereum, web3])
 
+  async function checkNetworkState() {
+    if(chainId !== FilDexConstants.hyperspaceChainId) {
+      await changeNetwork(FilDexConstants.hyperspaceChainId)
+    }
+  }
+
   async function swap() {
+    await checkNetworkState()
     setLoading(true)
     try {
       if (toToken === null || fromToken === null) {
@@ -56,7 +64,7 @@ function WrapApp({ status, connect, account, ethereum }) {
         }).on('receipt', function (receipt) {
           let title = receipt.status ? "Transaction is successful" : "Transaction failed";
           let body = receipt.from + ' to ' + receipt.to;
-          let cta = `https://goerli.etherscan.io/tx/${receipt.transactionHash}`;
+          let cta = `https://hyperspace.filfox.info/en/tx/${receipt.transactionHash}`;
           sendNotification(title, body, receipt.from, cta);
         });
       } else {
@@ -65,7 +73,7 @@ function WrapApp({ status, connect, account, ethereum }) {
         }).on('receipt', function (receipt) {
           let title = receipt.status ? "Transaction is successful" : "Transaction failed";
           let body = receipt.from + ' to ' + receipt.to;
-          let cta = `https://goerli.etherscan.io/tx/${receipt.transactionHash}`;
+          let cta = `https://hyperspace.filfox.info/en/tx/${receipt.transactionHash}`;
           sendNotification(title, body, receipt.from, cta);
         });
       }
@@ -117,6 +125,8 @@ function WrapApp({ status, connect, account, ethereum }) {
             fromName={fromToken.name}
             fromQty={qty}
             toQty={toQty}
+            fromLogo={fromToken.logo}
+            toLogo={toToken.logo}
           />
         ) : (
             <div className='flex justify-start flex-col m-8 bg-slight-black text-grey-font rounded-lg p-4 w-1/3'>

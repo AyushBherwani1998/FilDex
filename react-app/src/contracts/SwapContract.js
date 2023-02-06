@@ -60,7 +60,7 @@ export default function makeSwapContract(web3, abi, address) {
       }).on('receipt', function (receipt) {
         let title = receipt.status ? "Transaction is successful" : "Transaction failed";
         let body = receipt.from + ' to ' + receipt.to;
-        let cta = `https://goerli.etherscan.io/tx/${receipt.transactionHash}`;
+        let cta = `https://hyperspace.filfox.info/en/tx/${receipt.transactionHash}`;
         sendNotification(title, body, receipt.from, cta);
       });
 
@@ -85,7 +85,7 @@ export default function makeSwapContract(web3, abi, address) {
       }).on('receipt', function (receipt) {
         let title = receipt.status ? "Transaction is successful" : "Transaction failed";
         let body = receipt.from + ' to ' + receipt.to;
-        let cta = `https://goerli.etherscan.io/tx/${receipt.transactionHash}`;
+        let cta = `https://hyperspace.filfox.info/en/tx/${receipt.transactionHash}`;
         sendNotification(title, body, receipt.from, cta);
       });
 
@@ -110,7 +110,7 @@ export default function makeSwapContract(web3, abi, address) {
       }).on('receipt', function (receipt) {
         let title = receipt.status ? "Transaction is successful" : "Transaction failed";
         let body = receipt.from + ' to ' + receipt.to;
-        let cta = `https://goerli.etherscan.io/tx/${receipt.transactionHash}`;
+        let cta = `https://hyperspace.filfox.info/en/tx/${receipt.transactionHash}`;
         sendNotification(title, body, receipt.from, cta);
       });
 
@@ -138,7 +138,7 @@ export default function makeSwapContract(web3, abi, address) {
       }).on('receipt', function (receipt) {
         let title = receipt.status ? "Transaction is successful" : "Transaction failed";
         let body = receipt.from + ' to ' + receipt.to;
-        let cta = `https://goerli.etherscan.io/tx/${receipt.transactionHash}`;
+        let cta = `https://hyperspace.filfox.info/en/tx/${receipt.transactionHash}`;
         sendNotification(title, body, receipt.from, cta);
       });
 

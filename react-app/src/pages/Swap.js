@@ -10,8 +10,9 @@ import swapAbi from '../abi/SwapABI'
 import makeTokens from '../data/make_tokens'
 import TokenDropList from '../components/TokenDropList'
 import SwapSuccess from '../components/SwapSuccess'
+import changeNetwork from '../utils/change_network'
 
-function SwapApp ({ status, connect, account, ethereum }) {
+function SwapApp ({ status, connect, account, ethereum, chainId }) {
   const [qty, setQty] = useState('0')
   const [toQty, setToQty] = useState('0')
 
@@ -39,7 +40,14 @@ function SwapApp ({ status, connect, account, ethereum }) {
     }
   }, [ethereum, web3])
 
+  async function checkNetworkState() {
+    if(chainId !== FilDexConstants.hyperspaceChainId) {
+      await changeNetwork(FilDexConstants.hyperspaceChainId)
+    }
+  }
+
   async function swap () {
+    await checkNetworkState()
     setLoading(true)
     try {
       const swapContract = makeSwapContract(web3, swapAbi.abi, swapAbi.address)
@@ -91,6 +99,7 @@ function SwapApp ({ status, connect, account, ethereum }) {
   }
 
   async function approve () {
+    await checkNetworkState()
     setLoading(true)
     try {
       if (fromToken === null) {
