@@ -56,7 +56,7 @@ function WrapApp({ status, connect, account, ethereum }) {
         }).on('receipt', function (receipt) {
           let title = receipt.status ? "Transaction is successful" : "Transaction failed";
           let body = receipt.from + ' to ' + receipt.to;
-          let cta = `https://goerli.etherscan.io/tx/${receipt.transactionHash}`;
+          let cta = `https://hyperspace.filfox.info/en/tx/${receipt.transactionHash}`;
           sendNotification(title, body, receipt.from, cta);
         });
       } else {
@@ -65,7 +65,7 @@ function WrapApp({ status, connect, account, ethereum }) {
         }).on('receipt', function (receipt) {
           let title = receipt.status ? "Transaction is successful" : "Transaction failed";
           let body = receipt.from + ' to ' + receipt.to;
-          let cta = `https://goerli.etherscan.io/tx/${receipt.transactionHash}`;
+          let cta = `https://hyperspace.filfox.info/en/tx/${receipt.transactionHash}`;
           sendNotification(title, body, receipt.from, cta);
         });
       }
