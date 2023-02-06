@@ -65,9 +65,6 @@ Fildex token: A utility token with deflationary emission and burn mechanisms ach
 
 Push notifications: Integrating push notifications to provide better UX for use cases such as swaps Successful/failed and Lottery events.
 
-Tech Used: \
-Solidity, Remix, React, Typescript, Hardhat, Tailwind, Push
-
 
 ## Contract Addresses
 
