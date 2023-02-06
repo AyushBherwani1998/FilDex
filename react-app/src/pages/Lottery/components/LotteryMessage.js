@@ -18,7 +18,9 @@ export default function LotterMessage({ ticketNumber, lotteryStatus }) {
       return ticketNumber;
     }
 
-    const numberForSubmission = 1000000 - reverseNumber(ticketNumber);
+    const numberForSubmission = reverseNumber(
+      Number(String(ticketNumber)) - 1000000
+    );
     return numberForSubmission;
   };
 
