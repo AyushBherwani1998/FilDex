@@ -125,6 +125,8 @@ function WrapApp({ status, connect, account, ethereum, chainId }) {
             fromName={fromToken.name}
             fromQty={qty}
             toQty={toQty}
+            fromLogo={fromToken.logo}
+            toLogo={toToken.logo}
           />
         ) : (
             <div className='flex justify-start flex-col m-8 bg-slight-black text-grey-font rounded-lg p-4 w-1/3'>
