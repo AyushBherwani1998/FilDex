@@ -2,7 +2,7 @@ import { NotificationItem } from '@pushprotocol/uiweb';
 import { useState, useEffect } from "react";
 import getUserNotifications from "../../push/get_notifications";
 
-function Notifications() {
+function Notifications({ userAddress }) {
     const [notifications, setNotifications] = useState([]);
     const [isLoading, setLoading] = useState(false)
 
@@ -11,7 +11,7 @@ function Notifications() {
         const loadNotifications = async () => {
             try {
                 setLoading(true);
-                const feeds = await getUserNotifications('0x458B534Bb7857F5b9A761D71ffA40f41B6c6D51b');
+                const feeds = await getUserNotifications(userAddress);
                 console.log('notifications: ', feeds);
                 setNotifications(feeds);
             } catch (e) {

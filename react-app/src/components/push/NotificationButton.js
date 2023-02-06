@@ -2,34 +2,61 @@ import { Button } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import isUserSubscribed from "../../push/get_channels";
 import pushLogo from "../../assets/push_logo.svg";
+import requestForChannelOptIn from "../../push/opt_int_channel";
+import FilDexConstants from "../../Constants";
+import changeNetwork from "../../utils/change_network";
+import { useNavigate } from "react-router-dom";
 
-function NotificationButton() {
+function NotificationButton({ userAddress, status, chainId }) {
     const [show, setShow] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        isUserSubscribed("0xDC5aFb5DE928bAc740e4bcB1600B93504560d850").then((e) => {
+        console.log(userAddress);
+        isUserSubscribed(userAddress).then((e) => {
             setShow(!e);
         });
     })
 
+    async function channelOptin() {
+        if (status === FilDexConstants.notConnected) {
+            alert("Please connect your wallet");
+        } else {
+            if (chainId !== 5) {
+                await changeNetwork(5);
+                await requestForChannelOptIn(userAddress);
+
+            } else {
+                await requestForChannelOptIn(userAddress);
+            }
+            setShow(false);
+        }
+    }
+
+    async function navigateToNotifications() {
+        navigate("/notifications");
+    }
+
     // TODO: Add onClick
     return (
         <div>
-            {show && 
-                        <div className="flex flex-row rounded-full border border-white-500 text-white px-8 py-2 text-md mr-4 hover:bg-hover-fill">
-                        <img src={pushLogo} alt="metamask" />
-                        <div className="ml-2">Subscribe</div>
-                        <div className="ml-2">
-                        
-                        </div>
-                    </div>}
-            
-           
-            {!show && <Button variant="outline-dark hover:bg-hover-fill" className="mr-4"><div className="mx-4 text-s text-white flex flex-row justify-evenly items-center ">
-                <img src={pushLogo} alt="" />
+            {show &&
+                <div onClick={() => channelOptin()} className="flex flex-row rounded-full border border-white-500 text-white px-8 py-2 text-md mr-4 hover:bg-hover-fill">
+                    <img src={pushLogo} alt="push" />
+                    <div className="ml-2">Subscribe</div>
+                    <div className="ml-2">
+
+                    </div>
+                </div>}
+
+
+            {!show && <div onClick={() => navigateToNotifications()} className="flex flex-row rounded-full border border-white-500 text-white px-8 py-2 text-md mr-4 hover:bg-hover-fill">
+                <img src={pushLogo} alt="push" />
                 <div className="ml-2">Notifications</div>
-            </div></Button>}
-        </div>
+                <div className="ml-2">
+                </div>
+            </div>}
+        </div >
     );
 }
 
