@@ -9,8 +9,9 @@ import FilDexConstants from '../Constants'
 import makeTokens from '../data/make_tokens'
 import SwapSuccess from '../components/SwapSuccess'
 import swapLogo from '../assets/swap.svg'
+import changeNetwork from '../utils/change_network'
 
-function WrapApp({ status, connect, account, ethereum }) {
+function WrapApp({ status, connect, account, ethereum, chainId }) {
   const [qty, setQty] = useState('0')
   const [toQty, setToQty] = useState('0')
 
@@ -34,7 +35,14 @@ function WrapApp({ status, connect, account, ethereum }) {
     }
   }, [ethereum, web3])
 
+  async function checkNetworkState() {
+    if(chainId !== FilDexConstants.hyperspaceChainId) {
+      await changeNetwork(FilDexConstants.hyperspaceChainId)
+    }
+  }
+
   async function swap() {
+    await checkNetworkState()
     setLoading(true)
     try {
       if (toToken === null || fromToken === null) {

@@ -28,6 +28,7 @@ export default function App() {
                 connect={connect}
                 account={account}
                 ethereum={ethereum}
+                chainId={chainId}
               />
             }
           />
@@ -39,6 +40,7 @@ export default function App() {
                 connect={connect}
                 account={account}
                 ethereum={ethereum}
+                chainId={chainId}
               />
             }
           />
@@ -50,6 +52,7 @@ export default function App() {
                 connect={connect}
                 account={account}
                 ethereum={ethereum}
+                chainId={chainId}
               />
             }
           />
@@ -58,6 +61,7 @@ export default function App() {
             connect={connect}
             account={account}
             ethereum={ethereum}
+            chainId={chainId}
           />} />
           <Route path='/notifications' element={<NotificationsPage />} />
         </Routes>
