@@ -1,3 +1,6 @@
+
+<a href="https://imgur.com/V6X1J6d%22%3E<img src="https://i.imgur.com/V6X1J6d.png" title="source: imgur.com" /></a>
+
 ## Overview
 
 
@@ -35,7 +38,12 @@ Swap: Swap between any tokens native and non-native tokens.
 
 Liquidity pools: Create or supply liquidity for token pairs of your choice and earn trading fees on it.
 
-Lottery: &lt;btao bhai kya likhna h>
+Lottery: 
+
+* You can win a lottery ticket as an incentive for swapping or buy lottery tickets using fDex tokens.
+* You can choose a randomly generated 6-digit lottery number or reroll the number to your choice.
+* The lottery pool is distributed among the participants basis on the number matching
+* You will be informed via push notifications of your lottery results and can claim the prizes.
 
 Fildex token: A utility token with deflationary emission and burn mechanisms achieved by integrating it into the core of dex’s features like adding/supplying liquidity, lotteries, and more.
 
