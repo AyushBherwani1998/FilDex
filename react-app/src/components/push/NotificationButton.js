@@ -24,10 +24,12 @@ function NotificationButton({ userAddress, status, chainId }) {
         } else {
             if (chainId !== 5) {
                 await changeNetwork(5);
-                requestForChannelOptIn(userAddress);
+                await requestForChannelOptIn(userAddress);
+
             } else {
-                requestForChannelOptIn(userAddress);
+                await requestForChannelOptIn(userAddress);
             }
+            setShow(false);
         }
     }
 
