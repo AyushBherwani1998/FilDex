@@ -48,22 +48,17 @@ Solidity, Remix, React, Typescript, Hardhat, Tailwind, Push
 ## Contract Addresses
 
 
+Currently deployed on Hyperspace test net FVM
 
+| Contract name    | Contract address                           |
+| ---------------- | ------------------------------------------ |
+| FSUD             | 0x9FB47Fa35ec3BFcE7DbcE3f490D1a389c3891a90 |
+| FDAI             | 0x4cC33BD5d61791aC58a43A4f645256E7cc75ED1c |
+| FDEX             | 0x4E4b516BCFC8EDc5028416Bd588371115b82b65e |
+| wtFil            | 0x331e12FA9055EBC5F765c6a357D4eB3B1c7008cD |
+| FilDex swap      | 0x7Ae1344EAAAe3B13136db444730E071682270004 |
+| FilDex router    | 0xc64C4d67FE0c17d3f80BfAFDD42C3442c36c4b7A |
+| FilDex factory   | 0x33961acE8247E175Da2635b6eB5d72a7513e6eF5 |
+| FilDex lottery   | 0x5f86884888e2A0Cc39D996C3F4a7b1CE926bf8DB |
+| Random generator | 0x59964E4c9D500DBc5Ddee715CbBDFA8FEC8F6ad4 |
 
-(Currently deployed on Hyperspace test net FVM)
-
-Token Contracts:
-
-Core platform contracts
-
-Swap:
-
-Lottery:
-
-FilDexRouter:
-
-FilDexFactory:
-
-Random generator:0x59964E4c9D500DBc5Ddee715CbBDFA8FEC8F6ad4
-
-FilDexLottery: 0x5f86884888e2A0Cc39D996C3F4a7b1CE926bf8DB
